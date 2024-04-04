@@ -61,14 +61,16 @@ class Team1 extends Team {
 
     public void search() {
       Node start = grid.getNearestNode(this.position);
-      List<Node> path = this.team.graph.aStarSearch(start, startNode);
-      if (path != null) {
+      List<Node> aStarPath = this.team.graph.aStarSearch(start, startNode);
+      List<Node> breadthFirstPath = this.team.graph.breadthFirstSearch(start, startNode);
+      /*if (path != null) {
         int step = 1;
         for (int i = path.size() - 1; i >= 0; i--) {
           println("Step: " + step + ", Column: " + path.get(i).col + ", Row: " + path.get(i).row);
           step++;
         }
-      }
+      }*/
+      this.pause_state = false;
     }
 
 
@@ -151,15 +153,16 @@ class Team1 extends Team {
         if (this.search_state) {
           search();
           this.search_state = false;
+          this.pause_state = true;
 
         } else {
           //moveForward_state();
-          if (this.stop_state) {
+          if (this.stop_state && !this.pause_state) {
             //rotateTo()
             wander();
           }
 
-          if (this.idle_state) {
+          if (this.idle_state && !this.pause_state) {
             wander();
           }
         }

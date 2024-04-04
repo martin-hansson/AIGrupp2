@@ -144,6 +144,8 @@ void draw()
     grid.displayNearestNode(mouseX, mouseY);
 
     for (Node node : this.teams[0].graph.graph.keySet()) {
+      strokeWeight(1);
+      stroke(255, 92, 92);
       fill(255, 92, 92);
       grid.displayNearestNode(node.position);
       List<Edge> edges = this.teams[0].graph.getEdges(node);
@@ -151,11 +153,24 @@ void draw()
         continue;
       
       for (Edge edge : edges) {
+        strokeWeight(1);
+        stroke(255, 92, 92);
         Node adjacent = edge.to;
         if (adjacent == null) 
           continue;
 
-        line(node.position.x, node.position.y, adjacent.position.x, adjacent.position.y);  
+        if (edge.isAStarPath) {
+          strokeWeight(4);
+          stroke(0);
+          line(node.position.x, node.position.y, adjacent.position.x, adjacent.position.y); 
+        }
+        
+        if (edge.isBreadthFirstPath) {
+          strokeWeight(2);
+          stroke(50, 205, 50);
+        }
+
+        line(node.position.x, node.position.y, adjacent.position.x, adjacent.position.y); 
       }
     }
   }
@@ -344,6 +359,15 @@ void keyReleased() {
       for (Tank tank : allTanks) {
         if (tank.isReady)
           tank.search_state = true;
+      }
+    }
+
+    if (key == 'r') {
+      for (List<Edge> edges : teams[0].graph.graph.values()) {
+        for (Edge edge : edges) {
+          edge.isBreadthFirstPath = false;
+          edge.isAStarPath = false;
+        }
       }
     }
 }
