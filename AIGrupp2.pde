@@ -146,6 +146,17 @@ void draw()
     for (Node node : this.teams[0].graph.graph.keySet()) {
       fill(255, 92, 92);
       grid.displayNearestNode(node.position);
+      List<Edge> edges = this.teams[0].graph.getEdges(node);
+      if (edges == null) 
+        continue;
+      
+      for (Edge edge : edges) {
+        Node adjacent = edge.to;
+        if (adjacent == null) 
+          continue;
+
+        line(node.position.x, node.position.y, adjacent.position.x, adjacent.position.y);  
+      }
     }
   }
   
@@ -327,6 +338,13 @@ void keyReleased() {
 
     if (key == 'd') {
       debugOn = !debugOn;
+    }
+
+    if (key == 's') {
+      for (Tank tank : allTanks) {
+        if (tank.isReady)
+          tank.search_state = true;
+      }
     }
 }
 

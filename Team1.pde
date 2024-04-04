@@ -49,8 +49,27 @@ class Team1 extends Team {
     public void wander() {
       println("*** Team"+this.team_id+".Tank["+ this.getId() + "].wander()");
       //rotateTo(grid.getRandomNodePosition());  // Rotera mot ett slumpmässigt mål.
-      moveTo(grid.getRandomNodePosition()); // Slumpmässigt mål.
+      PVector pos;
+      Node node;
+      do {
+        pos = grid.getRandomNodePosition();
+        node = grid.getNearestNode(pos);
+      } while (node.isVisited);
+      
+      moveTo(pos); // Slumpmässigt mål.
     } 
+
+    public void search() {
+      Node start = grid.getNearestNode(this.position);
+      List<Node> path = this.team.graph.aStarSearch(start, startNode);
+      if (path != null) {
+        int step = 1;
+        for (int i = path.size() - 1; i >= 0; i--) {
+          println("Step: " + step + ", Column: " + path.get(i).col + ", Row: " + path.get(i).row);
+          step++;
+        }
+      }
+    }
 
 
     //*******************************************************
@@ -129,16 +148,22 @@ class Team1 extends Team {
       }
 
       if (!this.userControlled) {
+        if (this.search_state) {
+          search();
+          this.search_state = false;
 
-        //moveForward_state();
-        if (this.stop_state) {
-          //rotateTo()
-          wander();
-        }
+        } else {
+          //moveForward_state();
+          if (this.stop_state) {
+            //rotateTo()
+            wander();
+          }
 
-        if (this.idle_state) {
-          wander();
+          if (this.idle_state) {
+            wander();
+          }
         }
+        
       }
     }
   }

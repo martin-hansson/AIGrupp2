@@ -52,6 +52,7 @@ class Tank extends Sprite { //<>//
   boolean stop_state;
   boolean stop_turning_state;
   boolean stop_turret_turning_state;
+  boolean search_state;
 
   boolean idle_state; // Kan användas när tanken inte har nåt att göra.
 
@@ -123,6 +124,7 @@ class Tank extends Sprite { //<>//
     this.isRotating = false;
     this.isAtHomebase = true;
     this.idle_state = true;
+    this.search_state = false;
 
     //this.ball = ball;
     //this.hasShot = false;
@@ -927,7 +929,6 @@ class Tank extends Sprite { //<>//
         //readSensors();
       }
       updatePosition();
-      println(this.startNode.col + " : " + this.startNode.row);
     }
   }
 
