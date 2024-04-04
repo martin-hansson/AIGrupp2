@@ -56,15 +56,12 @@ class Team {
   }
 
   void updateLogic() {
-
+    
   }
 
   void checkVisited(Node current){
       if (current != null) {
-        if (current.isVisited) {
-          println("Node already visited: " + current);
-        } else {
-          println("Node not visited: " + current);
+        if (!current.isVisited) {
           current.isVisited = true;
           addNode(current);
           
