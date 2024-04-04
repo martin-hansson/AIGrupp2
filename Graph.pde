@@ -73,11 +73,44 @@ class Graph {
     }
 
     void connect(Node from, Node to, int weight) {
-        graph.get(from).add(new Edge(from, to, weight));
+        if (from != null && to != null) 
+            graph.get(from).add(new Edge(from, to, weight));
+        else 
+            return;
     }
 
     boolean isConnected(Node from, Node to) {
         return graph.get(from).stream().anyMatch(edge -> edge.to == to);
+    }
+
+    List<Node> breadthFirstSearch(Node start, Node goal) {
+        LinkedList<SearchNode> frontier = new LinkedList<>();
+        Set<Node> visited = new HashSet<>();
+        frontier.addLast(new SearchNode(new Edge(null, start, 0), null));
+        int frontierCounter = 0;
+
+        while (!frontier.isEmpty()) {
+            SearchNode current = frontier.removeFirst();
+            frontierCounter++;
+
+            Node node = current.edge.to;
+            if (node == goal) {
+                println("BF Actions: " + frontierCounter);
+                return reconstructPath(current);
+            }
+                
+
+            visited.add(node);
+            List<Edge> adjacent = getEdges(node);
+            for (Edge edge : adjacent) {
+                Node next = edge.to;
+                if (next != null && !visited.contains(next)) {
+                    frontier.addLast(new SearchNode(edge, current));
+                }
+            }
+        }
+
+        return null;
     }
 
     List<Node> aStarSearch(Node start, Node goal) {
@@ -85,13 +118,17 @@ class Graph {
         Set<Node> visited = new HashSet<>();
         AStarNode current = new AStarNode(0, 0, new Edge(null, start, 0), null);
         frontier.add(current);
+        int frontierCounter = 0;
 
         while (!frontier.isEmpty()) {
             current = frontier.poll();
+            frontierCounter++;
             Node node = current.edge.to;
-            if (node == goal)
+            if (node == goal) {
+                println("A* Actions: " + frontierCounter);
                 return reconstructPath(current);
-            
+            }
+                
             visited.add(node);
             List<Edge> adjacent = getEdges(node);
             for (Edge edge : adjacent) {
@@ -114,26 +151,38 @@ class Graph {
         return (int) distance.mag();
     }
 
-    List<Node> reconstructPath(AStarNode node) {
+    List<Node> reconstructPath(SearchNode node) {
         List<Node> path = new LinkedList<>();
         while (node != null) {
+            if (node instanceof AStarNode)
+                node.edge.isAStarPath = true;
+            else 
+                node.edge.isBreadthFirstPath = true;
+            
             path.add(node.edge.to);
             node = node.path;
         }
         return path;
     }
 
-    class AStarNode implements Comparable<AStarNode> {
-        int priorityCost;
-        int costSoFar;
+    class SearchNode {
         Edge edge;
-        AStarNode path;
+        SearchNode path;
 
-        AStarNode(int priorityCost, int costSoFar, Edge edge, AStarNode path) {
-            this.priorityCost = priorityCost;
-            this.costSoFar = costSoFar;
+        SearchNode(Edge edge, SearchNode path) {
             this.edge = edge;
             this.path = path;
+        }
+    }
+
+    class AStarNode extends SearchNode implements Comparable<AStarNode> {
+        int priorityCost;
+        int costSoFar;
+
+        AStarNode(int priorityCost, int costSoFar, Edge edge, SearchNode path) {
+            super(edge, path);
+            this.priorityCost = priorityCost;
+            this.costSoFar = costSoFar;
         }
 
         @Override
