@@ -1,3 +1,5 @@
+import java.util.Collections;
+
 class Team1 extends Team {
 
   Team1(int team_id, int tank_size, color c, 
@@ -7,7 +9,7 @@ class Team1 extends Team {
     super(team_id, tank_size, c, tank0_startpos, tank0_id, /* ball0, */ tank1_startpos, tank1_id, /* ball1, */ tank2_startpos, tank2_id/*, ball2 */);  
 
     tanks[0] = new TankAgent(tank0_id, this, this.tank0_startpos, this.tank_size/*, ball0*/);
-    tanks[1] = new Tank(tank1_id, this, this.tank1_startpos, this.tank_size/*, ball1*/);
+    tanks[1] = new TankAgent(tank1_id, this, this.tank1_startpos, this.tank_size/*, ball1*/);
     tanks[2] = new Tank(tank2_id, this, this.tank2_startpos, this.tank_size/* , ball2 */);
 
     //this.homebase_x = 0;
@@ -18,6 +20,8 @@ class Team1 extends Team {
   public class TankAgent extends Tank {
 
     boolean started;
+    List<Node> path;
+    int pathIndex;
 
     //*******************************************************
     TankAgent(int id, Team team, PVector startpos, float diameter/* , CannonBall ball */) {
@@ -63,16 +67,18 @@ class Team1 extends Team {
       Node start = grid.getNearestNode(this.position);
       List<Node> aStarPath = this.team.graph.aStarSearch(start, startNode);
       List<Node> breadthFirstPath = this.team.graph.breadthFirstSearch(start, startNode);
-      /*if (path != null) {
-        int step = 1;
-        for (int i = path.size() - 1; i >= 0; i--) {
-          println("Step: " + step + ", Column: " + path.get(i).col + ", Row: " + path.get(i).row);
-          step++;
-        }
-      }*/
-      this.pause_state = false;
+      Collections.reverse(aStarPath);
+      this.path = aStarPath;
+      this.pathIndex = 1;
+      this.stop_state = false;
+      this.idle_state = false;
+      this.follow_state = true;
+      this.search_state = false;
     }
 
+    public void seek(PVector pos) {
+      moveTo(pos);
+    }
 
     //*******************************************************
     // Tanken meddelas om kollision med trädet.
@@ -137,7 +143,24 @@ class Team1 extends Team {
 
       //moveTo(new PVector(int(random(width)),int(random(height))));
       //moveTo(grid.getRandomNodePosition());
-      wander();
+      //if (this.search_state) {
+      // search();
+      if (this.follow_state) {
+        if (isAtHomebase) {
+          this.follow_state = false;
+          try {
+            Thread.sleep(3000);
+          } catch (InterruptedException e) {
+            e.printStackTrace();
+          }
+          wander();
+        } else {
+          moveTo(this.path.get(this.pathIndex).position);
+          if (this.pathIndex < this.path.size()-1)
+            this.pathIndex++;
+        }
+      } else
+        wander();
     }
 
     //*******************************************************
@@ -152,17 +175,17 @@ class Team1 extends Team {
       if (!this.userControlled) {
         if (this.search_state) {
           search();
-          this.search_state = false;
-          this.pause_state = true;
-
+        } else if (this.follow_state) {
+          seek(this.path.get(this.pathIndex).position);
         } else {
           //moveForward_state();
-          if (this.stop_state && !this.pause_state) {
+          
+          if (this.stop_state) {
             //rotateTo()
             wander();
           }
-
-          if (this.idle_state && !this.pause_state) {
+          
+          if (this.idle_state) {
             wander();
           }
         }

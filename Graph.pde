@@ -16,49 +16,65 @@ class Graph {
         if (node.col > 0) {
             adjacent = get(node.col - 1, node.row);
             if (!isConnected(node, adjacent))
-                connect(node, adjacent, 2);
+                connect(node, adjacent, 1);
+            if (!isConnected(adjacent, node))
+                connect(adjacent, node, 1);
         }
         
         if (node.col < 15) {
             adjacent = get(node.col + 1, node.row);
             if (!isConnected(node, adjacent))
-                connect(node, adjacent, 2);
+                connect(node, adjacent, 1);
+            if (!isConnected(adjacent, node))
+                connect(adjacent, node, 1);
         }
 
         if (node.row > 0) {
             adjacent = get(node.col, node.row - 1);
             if (!isConnected(node, adjacent))
-                connect(node, adjacent, 2);
+                connect(node, adjacent, 1);
+            if (!isConnected(adjacent, node))
+                connect(adjacent, node, 1);
         }
 
         if (node.row < 15) {
             adjacent = get(node.col, node.row + 1);
             if (!isConnected(node, adjacent))
-                connect(node, adjacent, 2);
+                connect(node, adjacent, 1);
+            if (!isConnected(adjacent, node))
+                connect(adjacent, node, 1);
         }
 
         if (node.col > 0 && node.row > 0) {
             adjacent = get(node.col - 1, node.row - 1);
             if (!isConnected(node, adjacent))
                 connect(node, adjacent, 1);
+            if (!isConnected(adjacent, node))
+                connect(adjacent, node, 1);
         }
 
         if (node.col < 15 && node.row < 15) {
             adjacent = get(node.col + 1, node.row + 1);
             if (!isConnected(node, adjacent))
                 connect(node, adjacent, 1);
+            if (!isConnected(adjacent, node))
+                connect(adjacent, node, 1);
         }
 
         if (node.col > 0 && node.row < 15) {
             adjacent = get(node.col - 1, node.row + 1);
             if (!isConnected(node, adjacent))
                 connect(node, adjacent, 1);
+            if (!isConnected(adjacent, node))
+                connect(adjacent, node, 1);
         }
 
         if (node.col < 15 && node.row > 0) {
             adjacent = get(node.col + 1, node.row - 1);
             if (!isConnected(node, adjacent))
                 connect(node, adjacent, 1);
+            if (!isConnected(adjacent, node))
+                connect(adjacent, node, 1);
         }
 
         println("Node added: " + node.col + ", " + node.row);
@@ -75,12 +91,13 @@ class Graph {
     void connect(Node from, Node to, int weight) {
         if (from != null && to != null) 
             graph.get(from).add(new Edge(from, to, weight));
-        else 
-            return;
     }
 
     boolean isConnected(Node from, Node to) {
-        return graph.get(from).stream().anyMatch(edge -> edge.to == to);
+        if (from == null || to == null)
+            return false;
+
+        return graph.get(from).stream().anyMatch(edge -> edge.to == to && edge.from == from);
     }
 
     List<Node> breadthFirstSearch(Node start, Node goal) {
@@ -104,7 +121,7 @@ class Graph {
             List<Edge> adjacent = getEdges(node);
             for (Edge edge : adjacent) {
                 Node next = edge.to;
-                if (next != null && !visited.contains(next)) {
+                if (!visited.contains(next)) {
                     frontier.addLast(new SearchNode(edge, current));
                 }
             }
@@ -133,10 +150,10 @@ class Graph {
             List<Edge> adjacent = getEdges(node);
             for (Edge edge : adjacent) {
                 Node next = edge.to;
-                if (next != null && !visited.contains(next)) {
-                    int g = edge.weight;
-                    int h = heuristic(next, goal);
-                    int f = g + h;
+                if (!visited.contains(next)) {
+                    double g = edge.weight;
+                    double h = heuristic(next, goal);
+                    double f = g + h;
                     AStarNode successor = new AStarNode(f, current.costSoFar, edge, current);
                     frontier.add(successor);
                 }
@@ -146,7 +163,7 @@ class Graph {
         return null;
     }
 
-    int heuristic(Node node, Node goal) {
+    double heuristic(Node node, Node goal) {
         PVector distance = PVector.add(node.position, goal.position);
         return (int) distance.mag();
     }
@@ -176,10 +193,10 @@ class Graph {
     }
 
     class AStarNode extends SearchNode implements Comparable<AStarNode> {
-        int priorityCost;
-        int costSoFar;
+        double priorityCost;
+        double costSoFar;
 
-        AStarNode(int priorityCost, int costSoFar, Edge edge, SearchNode path) {
+        AStarNode(double priorityCost, double costSoFar, Edge edge, SearchNode path) {
             super(edge, path);
             this.priorityCost = priorityCost;
             this.costSoFar = costSoFar;
@@ -187,7 +204,7 @@ class Graph {
 
         @Override
         public int compareTo(AStarNode other) {
-            return Integer.compare(priorityCost, other.priorityCost);
+            return Double.compare(priorityCost, other.priorityCost);
         }
 
     }

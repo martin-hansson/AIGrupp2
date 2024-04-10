@@ -71,7 +71,6 @@ class Team {
     
     void addNode(Node current){
       if (current != null) {
-        println("Adding node: " + current);
         graph.add(current);
       }
     }
@@ -79,9 +78,12 @@ class Team {
 
   // Används inte.
   // Hemma i homebase
-  //boolean isInHomebase(PVector pos) {
-  //  return true;
-  //}
+  boolean isInHomebase(PVector pos) {
+    return pos.x > this.homebase_x && 
+      pos.x < this.homebase_x + this.homebase_width &&
+      pos.y > this.homebase_y &&
+      pos.y < this.homebase_y + this.homebase_height;
+  }
   
   void displayHomeBaseTeam() {
     strokeWeight(1);

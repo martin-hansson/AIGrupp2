@@ -13,4 +13,12 @@ class Edge {
         this.isBreadthFirstPath = false;
     }
 
+    @Override
+    public String toString() {
+        return "Edge{" +
+                "from=" + from +
+                ", to=" + to +
+                "}";
+    }
+
 }

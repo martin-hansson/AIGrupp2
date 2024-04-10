@@ -53,7 +53,7 @@ class Tank extends Sprite { //<>//
   boolean stop_turning_state;
   boolean stop_turret_turning_state;
   boolean search_state;
-  boolean pause_state;
+  boolean follow_state;
 
   boolean idle_state; // Kan användas när tanken inte har nåt att göra.
 
@@ -126,7 +126,7 @@ class Tank extends Sprite { //<>//
     this.isAtHomebase = true;
     this.idle_state = true;
     this.search_state = false;
-    this.pause_state = false;
+    this.follow_state = false;
 
     //this.ball = ball;
     //this.hasShot = false;

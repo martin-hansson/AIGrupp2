@@ -156,8 +156,6 @@ void draw()
         strokeWeight(1);
         stroke(255, 92, 92);
         Node adjacent = edge.to;
-        if (adjacent == null) 
-          continue;
 
         if (edge.isAStarPath) {
           strokeWeight(4);
@@ -368,6 +366,13 @@ void keyReleased() {
           edge.isBreadthFirstPath = false;
           edge.isAStarPath = false;
         }
+      }
+    }
+
+    if (key == 'e') {
+      for (List<Edge> edges : teams[0].graph.graph.values()) {
+        for (Edge edge : edges)
+          System.out.println(edge);
       }
     }
 }
