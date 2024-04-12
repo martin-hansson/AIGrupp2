@@ -1,4 +1,4 @@
-class Node {
+class GridNode {
   // A node object knows about its location in the grid 
   // as well as its size with the variables x,y,w,h
   float x,y;   // x,y location
@@ -15,13 +15,13 @@ class Node {
   //***************************************************
   // Node Constructor 
   // Denna används för temporära jämförelser mellan Node objekt.
-  Node(float _posx, float _posy) {
+  GridNode(float _posx, float _posy) {
     this.position = new PVector(_posx, _posy);
   }
 
   //***************************************************  
   // Används vid skapande av grid
-  Node(int _id_col, int _id_row, float _posx, float _posy) {
+  GridNode(int _id_col, int _id_row, float _posx, float _posy) {
     this.position = new PVector(_posx, _posy);
     this.col = _id_col;
     this.row = _id_row;
@@ -31,7 +31,7 @@ class Node {
   } 
 
   //***************************************************  
-  Node(float tempX, float tempY, float tempW, float tempH, float tempAngle) {
+  GridNode(float tempX, float tempY, float tempW, float tempH, float tempAngle) {
     x = tempX;
     y = tempY;
     w = tempW;

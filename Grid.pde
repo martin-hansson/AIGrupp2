@@ -1,14 +1,14 @@
 class Grid {
   int cols, rows;
   int grid_size;
-  Node[][] nodes;
+  GridNode[][] nodes;
 
   //***************************************************  
   Grid(int _cols, int _rows, int _grid_size) {
     cols = _cols;
     rows = _rows;
     grid_size = _grid_size;
-    nodes = new Node[cols][rows];
+    nodes = new GridNode[cols][rows];
 
     createGrgetId();
   }
@@ -19,7 +19,7 @@ class Grid {
     for (int i = 0; i < cols; i++) {
       for (int j = 0; j < rows; j++) {
         // Initialize each object
-        nodes[i][j] = new Node(i, j, i*grid_size+grid_size, j*grid_size+grid_size);
+        nodes[i][j] = new GridNode(i, j, i*grid_size+grid_size, j*grid_size+grid_size);
       }
     }
   }
@@ -65,7 +65,7 @@ class Grid {
   }
 
   //***************************************************  
-  Node getNearestNode(PVector pvec) {
+  GridNode getNearestNode(PVector pvec) {
     // En justering för extremvärden.
     float tempx = pvec.x;
     float tempy = pvec.y;
@@ -82,7 +82,7 @@ class Grid {
 
     pvec = new PVector(tempx, tempy);
 
-    ArrayList<Node> nearestNodes = new ArrayList<Node>();
+    ArrayList<GridNode> nearestNodes = new ArrayList<GridNode>();
 
     for (int i = 0; i < cols; i++) {
       for (int j = 0; j < rows; j++) {
@@ -92,7 +92,7 @@ class Grid {
       }
     }
 
-    Node nearestNode = new Node(0, 0);
+    GridNode nearestNode = new GridNode(0, 0);
     for (int i = 0; i < nearestNodes.size(); i++) {
       if (nearestNodes.get(i).position.dist(pvec) < nearestNode.position.dist(pvec) ) {
         nearestNode = nearestNodes.get(i);
@@ -126,7 +126,7 @@ class Grid {
   
   //***************************************************  
   PVector getNearestNodePosition(PVector pvec) {
-    Node n = getNearestNode(pvec);
+    GridNode n = getNearestNode(pvec);
     
     return n.position;
   }
@@ -172,7 +172,7 @@ class Grid {
   // Används troligen tillsammans med getNearestNode().empty
   // om tom så addContent(Sprite)
   void addContent(Sprite s) {
-    Node n = getNearestNode(s.position);
+    GridNode n = getNearestNode(s.position);
     n.addContent(s);
   }
   

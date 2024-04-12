@@ -1,11 +1,11 @@
 class Edge {
-    Node from;
-    Node to;
+    GridNode from;
+    GridNode to;
     int weight;
     boolean isAStarPath;
     boolean isBreadthFirstPath;
 
-    Edge(Node from, Node to, int weight) {
+    Edge(GridNode from, GridNode to, int weight) {
         this.from = from;
         this.to = to;
         this.weight = weight;

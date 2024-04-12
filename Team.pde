@@ -7,7 +7,7 @@ class Team {
   PVector tank1_startpos = new PVector();
   PVector tank2_startpos = new PVector();
 
-  Graph graph = new Graph();
+  GridGraph graph = new GridGraph();
 
   float homebase_x;
   float homebase_y;
@@ -59,7 +59,7 @@ class Team {
     
   }
 
-  void checkVisited(Node current){
+  void checkVisited(GridNode current){
       if (current != null) {
         if (!current.isVisited) {
           current.isVisited = true;
@@ -69,7 +69,7 @@ class Team {
       }
     }
     
-    void addNode(Node current){
+    void addNode(GridNode current){
       if (current != null) {
         graph.add(current);
       }

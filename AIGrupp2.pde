@@ -143,7 +143,7 @@ void draw()
     ellipse(mouseX, mouseY, 5, 5);
     grid.displayNearestNode(mouseX, mouseY);
 
-    for (Node node : this.teams[0].graph.graph.keySet()) {
+    for (GridNode node : this.teams[0].graph.graph.keySet()) {
       strokeWeight(1);
       stroke(255, 92, 92);
       fill(255, 92, 92);
@@ -155,7 +155,7 @@ void draw()
       for (Edge edge : edges) {
         strokeWeight(1);
         stroke(255, 92, 92);
-        Node adjacent = edge.to;
+        GridNode adjacent = edge.to;
 
         if (edge.isAStarPath) {
           strokeWeight(4);
@@ -209,6 +209,8 @@ void checkForInput() {
 void updateTanksLogic() {
   for (Tank tank : allTanks) {
     if (tank.isReady) {
+      if (teams[1].isInHomebase(tank.position))
+        tank.search_state = true;
       tank.updateLogic();
     }
   }

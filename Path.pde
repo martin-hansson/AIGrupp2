@@ -9,17 +9,8 @@ class Path {
 
   Path() {
     // Arbitrary radius of 20
-    radius = 10;
+    radius = 20;
     points = new ArrayList<PVector>();
-  }
-
-  Path(List<Node> path) {
-    // Arbitrary radius of 20
-    radius = 10;
-    points = new ArrayList<PVector>();
-    for (Node n : path) {
-        addPoint(n.x, n.y);
-    }
   }
 
   // Add a point to the path

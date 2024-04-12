@@ -28,7 +28,7 @@ class Tank extends Sprite { //<>//
   PVector startpos;
   PVector positionPrev; //spara temp senaste pos.
 
-  Node startNode; // noden där tanken befinner sig.
+  GridNode startNode; // noden där tanken befinner sig.
 
   boolean hasTarget; // Används just nu för att kunna köra "manuellt" (ai har normalt target).
   PVector targetPosition; // Används vid förflyttning mot target.
@@ -780,13 +780,14 @@ class Tank extends Sprite { //<>//
     float d = desired.mag();
     // If arrived
 
-    // Scale with arbitrary damping within 100 pixels
+    // Scale with arbitrary damping within 100 pixel
     if (d < 100) {
       float m = map(d, 0, 100, 0, maxspeed);
       desired.setMag(m);
     } else {
       desired.setMag(maxspeed);
     }
+    
 
     // Steering = Desired minus Velocity
     PVector steer = PVector.sub(desired, velocity);
@@ -863,7 +864,7 @@ class Tank extends Sprite { //<>//
           if (this.isMoving) {
 
             this.heading = this.velocity.heading();
-            Node nearest = grid.getNearestNode(this.position);
+            GridNode nearest = grid.getNearestNode(this.position);
             this.team.checkVisited(nearest);
             arrive();
           }
