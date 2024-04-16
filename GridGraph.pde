@@ -116,13 +116,13 @@ class GridGraph {
 
         while (!frontier.isEmpty()) {
             SearchNode current = frontier.removeFirst();
-            frontierCounter++;
 
             GridNode node = current.edge.to;
             if (node == goal) {
-                println("BF Actions: " + frontierCounter);
+                println("BFS Actions: " + frontierCounter);
                 return reconstructPath(current);
             }
+            frontierCounter++;
                 
             
             List<Edge> adjacent = getEdges(node);
@@ -149,12 +149,13 @@ class GridGraph {
 
         while (!frontier.isEmpty()) {
             current = frontier.poll();
-            frontierCounter++;
+
             GridNode node = current.edge.to;
             if (node == goal) {
                 println("A* Actions: " + frontierCounter);
                 return reconstructPath(current);
             }
+            frontierCounter++;
                 
             List<Edge> adjacent = getEdges(node);
             if (adjacent != null) {
