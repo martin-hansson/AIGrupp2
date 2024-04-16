@@ -16,33 +16,33 @@ class GridGraph {
         if (node.col > 0) {
             adjacent = get(node.col - 1, node.row);
             if (!isConnected(node, adjacent))
-                connect(node, adjacent, 2);
+                connect(node, adjacent, 1);
             if (!isConnected(adjacent, node))
-                connect(adjacent, node, 2);
+                connect(adjacent, node, 1);
         }
         
         if (node.col < 15) {
             adjacent = get(node.col + 1, node.row);
             if (!isConnected(node, adjacent))
-                connect(node, adjacent, 2);
+                connect(node, adjacent, 1);
             if (!isConnected(adjacent, node))
-                connect(adjacent, node, 2);
+                connect(adjacent, node, 1);
         }
 
         if (node.row > 0) {
             adjacent = get(node.col, node.row - 1);
             if (!isConnected(node, adjacent))
-                connect(node, adjacent, 2);
+                connect(node, adjacent, 1);
             if (!isConnected(adjacent, node))
-                connect(adjacent, node, 2);
+                connect(adjacent, node, 1);
         }
 
         if (node.row < 15) {
             adjacent = get(node.col, node.row + 1);
             if (!isConnected(node, adjacent))
-                connect(node, adjacent, 2);
+                connect(node, adjacent, 1);
             if (!isConnected(adjacent, node))
-                connect(adjacent, node, 2);
+                connect(adjacent, node, 1);
         }
 
         if (node.col > 0 && node.row > 0) {
@@ -167,9 +167,7 @@ class GridGraph {
     }
 
     double heuristic(GridNode node, GridNode goal) {
-        return Math.abs(node.position.x - goal.position.x) + Math.abs(node.position.y - goal.position.y);
-        // PVector distance = PVector.add(node.position, goal.position);
-        // return distance.mag();
+        return Math.sqrt(Math.pow(node.col - goal.col, 2) + Math.pow(node.row - goal.row, 2));
     }
 
     List<GridNode> reconstructPath(SearchNode node) {
