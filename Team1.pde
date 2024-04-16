@@ -66,6 +66,8 @@ class Team1 extends Team {
     } 
 
     public void search() {
+      println("Num nodes: " + this.team.graph.getNumNodes());
+      println("Num edges: " + this.team.graph.getNumEdges());
       GridNode start = grid.getNearestNode(this.position);
       List<GridNode> aStarPath = this.team.graph.aStarSearch(start, startNode);
       List<GridNode> breadthFirstPath = this.team.graph.breadthFirstSearch(start, startNode);

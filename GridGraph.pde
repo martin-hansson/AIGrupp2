@@ -84,6 +84,14 @@ class GridGraph {
         return graph.get(node);
     }
 
+    int getNumNodes() {
+        return graph.size();
+    }
+
+    int getNumEdges() {
+        return graph.values().stream().mapToInt(List::size).sum();
+    }
+
     GridNode get(int col, int row) {
         return graph.keySet().stream().filter(node -> node.col == col && node.row == row).findFirst().orElse(null);
     }
@@ -116,13 +124,14 @@ class GridGraph {
                 return reconstructPath(current);
             }
                 
-            visited.add(node);
+            
             List<Edge> adjacent = getEdges(node);
             if (adjacent != null) {
                 for (Edge edge : adjacent) {
                     GridNode next = edge.to;
                     if (!visited.contains(next)) {
                         frontier.addLast(new SearchNode(edge, current));
+                        visited.add(next);
                     }
                 }
             }
@@ -147,7 +156,6 @@ class GridGraph {
                 return reconstructPath(current);
             }
                 
-            visited.add(node);
             List<Edge> adjacent = getEdges(node);
             if (adjacent != null) {
                 for (Edge edge : adjacent) {
@@ -158,6 +166,7 @@ class GridGraph {
                         double f = g + h;
                         AStarNode successor = new AStarNode(f, current.costSoFar, edge, current);
                         frontier.add(successor);
+                        visited.add(next);
                     }
                 }
             }
