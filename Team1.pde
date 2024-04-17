@@ -71,13 +71,22 @@ class Team1 extends Team {
       moveTo(pos); // Slumpmässigt mål.
     } 
 
+
+    // Metod för att agentern ska följa en sökväg.
     public void search() {
       println("Num nodes: " + this.team.graph.getNumNodes());
       println("Num edges: " + this.team.graph.getNumEdges());
       GridNode start = grid.getNearestNode(this.position);
+
+      // Lista för att hålla sökvägen för A*.
       List<GridNode> aStarPath = this.team.graph.aStarSearch(start, startNode);
+
+      // Lista för att hålla sökvägen för BFS.
       List<GridNode> breadthFirstPath = this.team.graph.breadthFirstSearch(start, startNode);
+      
       if (aStarPath != null && breadthFirstPath != null) {
+
+        // Kontrollerar vilken sökväg som ska följas
         if (this.aStarState) {
           Collections.reverse(aStarPath);
           this.path = aStarPath;
@@ -158,17 +167,24 @@ class Team1 extends Team {
 
       //moveTo(new PVector(int(random(width)),int(random(height))));
       //moveTo(grid.getRandomNodePosition());
+
+      // Om tanken är i sök-läge, ska den fortsätta att söka.
       if (this.search_state) {
           search();
           moveTo(this.path.get(this.pathIndex).position);
       } else if (this.follow_state) {
+
+        // Kontroll för att se om tanken är i hembasen.
         if (isAtHomebase) {
           this.follow_state = false;
+
+          // Vänta i 3 sekunder innan tanken ska fortsätta att vandra.
           try {
             Thread.sleep(3000);
           } catch (InterruptedException e) {
             e.printStackTrace();
           }
+          // Återställer alla kanter och tar bort visualiseringen av sökvägen.
           for (List<Edge> edges : teams[0].graph.graph.values()) {
             for (Edge edge : edges) {
               edge.isBreadthFirstPath = false;
@@ -176,6 +192,8 @@ class Team1 extends Team {
             }
           }
           wander();
+
+        // Om tanken inte är i hembasen, ska den fortsätta att följa sökvägen.
         } else {
           moveTo(this.path.get(this.pathIndex).position);
           if (this.pathIndex < this.path.size()-1)

@@ -15,6 +15,8 @@ Denna uppgift är implementerad i Processing. För att köra koden, öppna mappe
 
 När agenten hamnar i motståndarnas bas ska den automatiskt söka efter den kortaste vägen hem, detta sker när noden innuti basen är nådd.
 
+I vissa fall så skapas en sökväg som orsakar kollisioner. I dessa fall vandrar tanken, och efter den anlänt till sin tillfälliga målnod återupptas sökvägen vid nästa pathIndex. 
+
 ## Tangentfunktioner
 
 ### P-tangenten
