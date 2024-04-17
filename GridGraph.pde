@@ -127,14 +127,16 @@ class GridGraph {
         // Lägger till noden där sökningen börjar från i listan av noder som ska besökas
         frontier.addLast(new SearchNode(new Edge(null, start, 0), null));
 
-        //räknare för att hålla koll på hur många noder som besökts
+        // Räknare för att hålla koll på hur många noder som besökts
         int frontierCounter = 0;
 
-        //Loop som körs så länge det finns noder att besöka
+        // Loop som körs så länge det finns noder att besöka
             while (!frontier.isEmpty()) {
             SearchNode current = frontier.removeFirst();
 
             GridNode node = current.edge.to;
+
+            // Kontrollerar om noden som besöks är målnoden
             if (node == goal) {
                 println("BFS Actions: " + frontierCounter);
                 return reconstructPath(current);
@@ -144,8 +146,12 @@ class GridGraph {
             
             List<Edge> adjacent = getEdges(node);
             if (adjacent != null) {
+
+                // Loop som går igenom alla noder som är anslutna till den nod som besöks
                 for (Edge edge : adjacent) {
                     GridNode next = edge.to;
+
+                    // Kontrollerar om noden redan besökts
                     if (!visited.contains(next)) {
                         frontier.addLast(new SearchNode(edge, current));
                         visited.add(next);
@@ -157,27 +163,43 @@ class GridGraph {
         return null;
     }
 
+    // Implementering av A* search som används för att hitta vägen till tankens "hemnod"
     List<GridNode> aStarSearch(GridNode start, GridNode goal) {
+
+        // PriorityQueue som håller koll på vilka noder som ska besökas
         PriorityQueue<AStarNode> frontier = new PriorityQueue<>();
+
+        // Set som håller koll på vilka noder som redan besökts
         Set<GridNode> visited = new HashSet<>();
+
+        // Lägger till noden där sökningen börjar från i listan av noder som ska besökas
         AStarNode current = new AStarNode(0, 0, new Edge(null, start, 0), null);
         frontier.add(current);
+
+        // Räknare för att hålla koll på hur många noder som besökts
         int frontierCounter = 0;
 
+        // Loop som körs så länge det finns noder att besöka
         while (!frontier.isEmpty()) {
             current = frontier.poll();
-
+            
             GridNode node = current.edge.to;
+            
+            // Kontrollerar om noden som besöks är målnoden
             if (node == goal) {
                 println("A* Actions: " + frontierCounter);
                 return reconstructPath(current);
             }
             frontierCounter++;
-                
+            
             List<Edge> adjacent = getEdges(node);
             if (adjacent != null) {
+
+                // Loop som går igenom alla noder som är anslutna till den nod som besöks
                 for (Edge edge : adjacent) {
                     GridNode next = edge.to;
+
+                    // Kontrollerar om noden redan besökts
                     if (!visited.contains(next)) {
                         double g = edge.weight;
                         double h = heuristic(next, goal);
@@ -192,13 +214,24 @@ class GridGraph {
         return null;
     }
 
+    // Heuristik som används i A* search för att beräkna avståndet mellan två noder
     double heuristic(GridNode node, GridNode goal) {
+
+        // Beräknar avståndet mellan två noder med hjälp av Euclidean distance
         return Math.sqrt(Math.pow(node.col - goal.col, 2) + Math.pow(node.row - goal.row, 2));
     }
 
+
+    // Metod som rekonstruerar vägen från målnoden till startnoden
     List<GridNode> reconstructPath(SearchNode node) {
+
+        // LinkedList som håller koll på vilka noder som ingår i vägen
         List<GridNode> path = new LinkedList<>();
+
+        // Loop som går igenom alla noder som ingår i vägen
         while (node != null) {
+
+            // Kontrollerar om noden är en A* nod eller en Breadth First nod
             if (node instanceof AStarNode)
                 node.edge.isAStarPath = true;
             else 
