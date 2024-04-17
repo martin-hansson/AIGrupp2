@@ -1,3 +1,8 @@
+//Grupp 02:
+// Alexandra Jansson alja5888,
+// Tyr Hullmann tyhu6316,
+// Martin Hansson maha6445
+
 class Tank extends Sprite { //<>//
   int id;
   //String name; //Sprite
@@ -54,6 +59,7 @@ class Tank extends Sprite { //<>//
   boolean stop_turret_turning_state;
   boolean search_state;
   boolean follow_state;
+  boolean aStarState;
 
   boolean idle_state; // Kan användas när tanken inte har nåt att göra.
 
@@ -127,6 +133,7 @@ class Tank extends Sprite { //<>//
     this.idle_state = true;
     this.search_state = false;
     this.follow_state = false;
+    this.aStarState = true;
 
     //this.ball = ball;
     //this.hasShot = false;

@@ -1,3 +1,9 @@
+
+//Grupp 02:
+// Alexandra Jansson, alja5888
+// Tyr Hullmann tyhu6316,
+// Martin Hansson maha6445
+
 import java.util.Collections;
 
 class Team1 extends Team {
@@ -72,86 +78,20 @@ class Team1 extends Team {
       List<GridNode> aStarPath = this.team.graph.aStarSearch(start, startNode);
       List<GridNode> breadthFirstPath = this.team.graph.breadthFirstSearch(start, startNode);
       if (aStarPath != null && breadthFirstPath != null) {
-        Collections.reverse(aStarPath);
-        this.path = aStarPath;
+        if (this.aStarState) {
+          Collections.reverse(aStarPath);
+          this.path = aStarPath;
+        } else {
+          Collections.reverse(breadthFirstPath);
+          this.path = breadthFirstPath;
+        }
+        
         this.pathIndex = 1;
-        // this.path = new Path();
-        // for (Node n : aStarPath) {
-        //   path.addPoint(n.position.x, n.position.y);
-        // }
         this.stop_state = false;
         this.idle_state = false;
         this.follow_state = true;
         this.search_state = false;
-        
-        // this.pathIndex = 1;
-        // this.stop_state = false;
-        // this.idle_state = false;
-        // this.follow_state = true;
-        // this.search_state = false;
-        // moveTo(this.path.get(this.pathIndex).position);
       }
-    }
-
-    public void seek(PVector target) {
-      PVector desired = PVector.sub(target, this.position);
-      if (desired.mag() == 0) return;
-
-      desired.normalize();
-      desired.mult(this.maxspeed);
-      PVector steer = PVector.sub(desired, this.velocity);
-      steer.limit(this.maxforce);
-      this.applyForce(steer);
-    }
-
-    public void follow(Path path) {
-      PVector predict = this.velocity.get();
-      predict.normalize();
-      predict.mult(50);
-      PVector predictpos = PVector.add(this.position, predict);
-
-      PVector normal = null;
-      PVector target = null;
-      float worldRecord = 1000000;
-
-      for (int i = 0; i < path.points.size() - 1; i++) {
-        PVector a = path.points.get(i);
-        PVector b = path.points.get(i + 1);
-
-        PVector normalPoint = getNormalPoint(predictpos, a, b);
-
-        if (normalPoint.x < a.x || normalPoint.x > b.x) {
-          // This is something of a hacky solution, but if it's not within the line segment
-          // consider the normal to just be the end of the line segment (point b)
-          normalPoint = b.get();
-        }
-
-        float distance = PVector.dist(predictpos, normalPoint);
-        if (distance < worldRecord) {
-          worldRecord = distance;
-          normal = normalPoint;
-
-          PVector dir = PVector.sub(b, a);
-          dir.normalize();
-
-          dir.mult(10);
-          target = normalPoint.get();
-          target.add(dir); 
-        }
-      }
-
-      if (worldRecord > path.radius) {
-        seek(target);
-      }
-    }
-
-    PVector getNormalPoint(PVector p, PVector a, PVector b) {
-      PVector ap = PVector.sub(p, a);
-      PVector ab = PVector.sub(b, a);
-      ab.normalize();
-      ab.mult(ap.dot(ab));
-      PVector normalPoint = PVector.add(a, ab);
-      return normalPoint;
     }
 
     //*******************************************************

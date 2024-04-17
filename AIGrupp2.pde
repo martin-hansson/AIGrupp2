@@ -1,3 +1,9 @@
+//Grupp 02:
+// Alexandra Jansson, alja5888
+// Tyr Hullmann tyhu6316,
+// Martin Hansson maha6445
+
+
 // Följande kan användas som bas inför uppgiften.
 // Syftet är att sammanställa alla varabelvärden i scenariet.
 // Variabelnamn har satts för att försöka överensstämma med exempelkoden.
@@ -369,12 +375,16 @@ void keyReleased() {
           edge.isAStarPath = false;
         }
       }
+
+      for (Tank tank : allTanks) {
+        tank.follow_state = false;
+      }
     }
 
-    if (key == 'e') {
-      for (List<Edge> edges : teams[0].graph.graph.values()) {
-        for (Edge edge : edges)
-          System.out.println(edge);
+    if (key == 'b') {
+      for (Tank tank : allTanks) {
+        if (tank.isReady)
+          tank.aStarState = !tank.aStarState;
       }
     }
 }

@@ -1,3 +1,8 @@
+//Grupp 02:
+// Alexandra Jansson alja5888,
+// Tyr Hullmann tyhu6316,
+// Martin Hansson maha6445
+
 import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
@@ -6,6 +11,8 @@ import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.HashSet;
 
+
+//Grafen som byggs upp av GraphNodes och Edges när tanken utforskar världen
 class GridGraph {
 
     Map<GridNode, List<Edge>> graph = new HashMap<>();
@@ -108,13 +115,23 @@ class GridGraph {
         return graph.get(from).stream().anyMatch(edge -> edge.to == to && edge.from == from);
     }
 
+
+    // Implementering av breadth first search som används för att hitta vägen till tankens "hemnod"
     List<GridNode> breadthFirstSearch(GridNode start, GridNode goal) {
+        // FIFO kö som håller koll på vilka noder som ska besökas
         LinkedList<SearchNode> frontier = new LinkedList<>();
+
+        // Set som håller koll på vilka noder som redan besökts
         Set<GridNode> visited = new HashSet<>();
+
+        // Lägger till noden där sökningen börjar från i listan av noder som ska besökas
         frontier.addLast(new SearchNode(new Edge(null, start, 0), null));
+
+        //räknare för att hålla koll på hur många noder som besökts
         int frontierCounter = 0;
 
-        while (!frontier.isEmpty()) {
+        //Loop som körs så länge det finns noder att besöka
+            while (!frontier.isEmpty()) {
             SearchNode current = frontier.removeFirst();
 
             GridNode node = current.edge.to;
@@ -165,8 +182,7 @@ class GridGraph {
                         double g = edge.weight;
                         double h = heuristic(next, goal);
                         double f = g + h;
-                        AStarNode successor = new AStarNode(f, current.costSoFar, edge, current);
-                        frontier.add(successor);
+                        frontier.add(new AStarNode(f, current.costSoFar, edge, current));
                         visited.add(next);
                     }
                 }

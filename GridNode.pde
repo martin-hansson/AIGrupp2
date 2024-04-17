@@ -1,3 +1,8 @@
+//Grupp 02:
+// Alexandra Jansson, alja5888
+// Tyr Hullmann tyhu6316,
+// Martin Hansson maha6445
+
 class GridNode {
   // A node object knows about its location in the grid 
   // as well as its size with the variables x,y,w,h
