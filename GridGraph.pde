@@ -165,7 +165,7 @@ class GridGraph {
 
     // Implementering av A*-sökning som används för att hitta den kortaste vägen till tankens "hemnod"
     List<GridNode> aStarSearch(GridNode start, GridNode goal) {
-        // FIFO kö som håller koll på vilka noder som ska besökas
+        // Prioritetskö som håller koll på vilka noder som ska besökas
         PriorityQueue<AStarNode> frontier = new PriorityQueue<>();
 
         // Set som håller koll på vilka noder som redan besökts
