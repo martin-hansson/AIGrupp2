@@ -149,6 +149,7 @@ void draw()
     ellipse(mouseX, mouseY, 5, 5);
     grid.displayNearestNode(mouseX, mouseY);
 
+    // Rita upp alla kanter
     for (GridNode node : this.teams[0].graph.graph.keySet()) {
       strokeWeight(1);
       stroke(255, 92, 92);
@@ -163,6 +164,7 @@ void draw()
         stroke(255, 92, 92);
         GridNode adjacent = edge.to;
 
+        // Visa A* och Breadth First sökvägar.
         if (edge.isAStarPath) {
           strokeWeight(4);
           stroke(0);
@@ -215,6 +217,7 @@ void checkForInput() {
 void updateTanksLogic() {
   for (Tank tank : allTanks) {
     if (tank.isReady) {
+      // Om tanken är i fiendens bas, sätt i sök-läge
       if (teams[1].isInHomebase(tank.position))
         tank.search_state = true;
       tank.updateLogic();
@@ -361,6 +364,7 @@ void keyReleased() {
       debugOn = !debugOn;
     }
 
+    // Sätt tanken i sök-läge
     if (key == 's') {
       for (Tank tank : allTanks) {
         if (tank.isReady)
@@ -368,6 +372,7 @@ void keyReleased() {
       }
     }
 
+    // Återställ sök-läge och tanken vandrar
     if (key == 'r') {
       for (List<Edge> edges : teams[0].graph.graph.values()) {
         for (Edge edge : edges) {
@@ -381,6 +386,7 @@ void keyReleased() {
       }
     }
 
+    // Bytt mellan A* och BFS
     if (key == 'b') {
       for (Tank tank : allTanks) {
         if (tank.isReady)

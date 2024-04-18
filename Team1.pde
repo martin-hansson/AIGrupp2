@@ -63,6 +63,8 @@ class Team1 extends Team {
       //rotateTo(grid.getRandomNodePosition());  // Rotera mot ett slumpmässigt mål.
       PVector pos;
       GridNode node;
+
+      // Slumpar ny position tills att en obesökt nod hittas
       do {
         pos = grid.getRandomNodePosition();
         node = grid.getNearestNode(pos);
@@ -71,22 +73,25 @@ class Team1 extends Team {
       moveTo(pos); // Slumpmässigt mål.
     } 
 
-
-    // Metod för att agentern ska följa en sökväg.
+    // //*******************************************************
+    // Sök efter en väg till hemmabasen
     public void search() {
       println("Num nodes: " + this.team.graph.getNumNodes());
       println("Num edges: " + this.team.graph.getNumEdges());
+
+      // Hämta noden närmast tankens nuvarande position
       GridNode start = grid.getNearestNode(this.position);
 
-      // Lista för att hålla sökvägen för A*.
+      // Sök med A* och BFS efter en väg till hemmabasen
       List<GridNode> aStarPath = this.team.graph.aStarSearch(start, startNode);
 
       // Lista för att hålla sökvägen för BFS.
       List<GridNode> breadthFirstPath = this.team.graph.breadthFirstSearch(start, startNode);
-      
+
+      // Om en väg hittades
       if (aStarPath != null && breadthFirstPath != null) {
 
-        // Kontrollerar vilken sökväg som ska följas
+        // Sätt vägen till antingen A* eller BFS beroende på tankens state
         if (this.aStarState) {
           Collections.reverse(aStarPath);
           this.path = aStarPath;
@@ -95,6 +100,7 @@ class Team1 extends Team {
           this.path = breadthFirstPath;
         }
         
+        // Återställ tillstånd
         this.pathIndex = 1;
         this.stop_state = false;
         this.idle_state = false;
@@ -168,13 +174,13 @@ class Team1 extends Team {
       //moveTo(new PVector(int(random(width)),int(random(height))));
       //moveTo(grid.getRandomNodePosition());
 
-      // Om tanken är i sök-läge, ska den fortsätta att söka.
+      // Om tanken är i sök-läge, hitta den kortaste vägen och börja röra genom vägen
       if (this.search_state) {
           search();
           moveTo(this.path.get(this.pathIndex).position);
-      } else if (this.follow_state) {
 
-        // Kontroll för att se om tanken är i hembasen.
+      } else if (this.follow_state) {
+        // Om tanken följer vägen och hamnar i hemmabasen, stanna i 3 sekunder och börja vandra
         if (isAtHomebase) {
           this.follow_state = false;
 
@@ -195,30 +201,13 @@ class Team1 extends Team {
 
         // Om tanken inte är i hembasen, ska den fortsätta att följa sökvägen.
         } else {
+          // Om tanken följer vägen, fortsätt röra genom vägen
           moveTo(this.path.get(this.pathIndex).position);
           if (this.pathIndex < this.path.size()-1)
             this.pathIndex++;
         }
       } else
         wander();
-    }
-
-    public void updateFollow() {
-      // Update velocity
-      velocity.add(acceleration);
-      // Limit speed
-      velocity.limit(maxspeed);
-      position.add(velocity);
-      // Reset accelertion to 0 each cycle
-      acceleration.mult(0);
-    }
-
-    // Wraparound
-    void borders(Path p) {
-      if (position.x > p.getEnd().x + r) {
-        position.x = p.getStart().x - r;
-        position.y = p.getStart().y + (position.y-p.getEnd().y);
-      }
     }
 
     //*******************************************************
@@ -231,16 +220,6 @@ class Team1 extends Team {
       }
 
       if (!this.userControlled) {
-        // if (this.search_state) {
-        //   search();
-        // } else if (this.follow_state) {
-        //   follow(this.path);
-        //   updateFollow();
-        //   borders(this.path);
-        //   // moveTo(this.path.get(this.pathIndex).position);
-        // } else {
-          //moveForward_state();
-          
           if (this.stop_state) {
             //rotateTo()
             wander();
@@ -249,8 +228,6 @@ class Team1 extends Team {
           if (this.idle_state) {
             wander();
           }
-        // }
-        
       }
     }
   }

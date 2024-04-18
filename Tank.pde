@@ -57,6 +57,8 @@ class Tank extends Sprite { //<>//
   boolean stop_state;
   boolean stop_turning_state;
   boolean stop_turret_turning_state;
+
+  // Nya tillstånd
   boolean search_state;
   boolean follow_state;
   boolean aStarState;
