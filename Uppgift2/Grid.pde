@@ -176,5 +176,9 @@ class Grid {
     Node n = getNearestNode(s.position);
     n.addContent(s);
   }
+
+  Node getNode(int col, int row) {
+    return nodes[col][row];
+  }
   
 }

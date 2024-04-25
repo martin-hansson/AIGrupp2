@@ -1,3 +1,6 @@
+import java.util.Random;
+import java.util.List;
+
 class Team1 extends Team {
 
   Team1(int team_id, int tank_size, color c, 
@@ -6,7 +9,7 @@ class Team1 extends Team {
     PVector tank2_startpos, int tank2_id, CannonBall ball2) {
     super(team_id, tank_size, c, tank0_startpos, tank0_id, ball0, tank1_startpos, tank1_id, ball1, tank2_startpos, tank2_id, ball2);  
 
-    tanks[0] = new Tank2(tank0_id, this, this.tank0_startpos, this.tank_size, ball0);
+    tanks[0] = new MinimaxAgent(tank0_id, this, this.tank0_startpos, this.tank_size, ball0);
     tanks[1] = new Tank(tank1_id, this, this.tank1_startpos, this.tank_size, ball1);
     tanks[2] = new Tank(tank2_id, this, this.tank2_startpos, this.tank_size, ball2);
 
@@ -126,12 +129,13 @@ class Team1 extends Team {
   }
 
   //==================================================
-  public class Tank2 extends Tank {
+  public class MinimaxAgent extends Tank {
 
     boolean started;
+    Random random = new Random();
 
     //*******************************************************
-    Tank2(int id, Team team, PVector startpos, float diameter, CannonBall ball) {
+    MinimaxAgent(int id, Team team, PVector startpos, float diameter, CannonBall ball) {
       super(id, team, startpos, diameter, ball);
 
       this.started = false; 
@@ -160,9 +164,30 @@ class Team1 extends Team {
     public void wander() {
       println("*** Team"+this.team_id+".Tank["+ this.getId() + "].wander()");
       //rotateTo(grid.getRandomNodePosition());  // Rotera mot ett slumpmässigt mål.
-      moveTo(grid.getRandomNodePosition()); // Slumpmässigt mål.
+      Node node = getNextMove(grid.getNearestNode(this.position));
+      moveTo(node.position); // Slumpmässigt mål.
     } 
 
+    public Node getNextMove(Node current) {
+      List<Action> actions = current.getActions();
+      Action next = actions.get(random.nextInt(actions.size()));
+      Node node = null;
+      switch (next) {
+        case UP:
+          node = grid.getNode(current.col, current.row - 1);
+          break;
+        case DOWN:
+          node = grid.getNode(current.col, current.row + 1);
+          break;
+        case RIGHT:
+          node = grid.getNode(current.col + 1, current.row);
+          break;
+        case LEFT:
+          node = grid.getNode(current.col - 1, current.row);
+          break;
+      }
+      return node;
+    }
 
     //*******************************************************
     // Tanken meddelas om kollision med trädet.
@@ -236,7 +261,7 @@ class Team1 extends Team {
 
       if (!started) {
         started = true;
-        moveTo(grid.getRandomNodePosition());
+        wander();
       }
 
       if (!this.userControlled) {

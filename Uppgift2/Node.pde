@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.List;
+
 class Node {
   // A node object knows about its location in the grid 
   // as well as its size with the variables x,y,w,h
@@ -10,6 +13,9 @@ class Node {
   
   Sprite content;
   boolean isEmpty;
+  color RED = color(255, 0, 0);
+  color BLUE = color(0, 0, 255);
+  color fill;
   
   //***************************************************
   // Node Constructor 
@@ -54,4 +60,39 @@ class Node {
   Sprite content() {
     return this.content;
   }
+
+  int getNumNeighbors() {
+    int num = 0;
+    if (this.col - 1 > 0)
+      num++;
+    
+    if (this.col + 1 < 15)
+      num++;
+    
+    if (this.row - 1 > 0)
+      num++;
+
+    if (this.row + 1 < 15)
+      num++;
+
+    return num;
+  }
+
+  List<Action> getActions() {
+    List<Action> actions = new ArrayList<Action>();
+    if (this.col - 1 > 0)
+      actions.add(Action.LEFT);
+    if (this.col + 1 < 15)
+      actions.add(Action.RIGHT);
+    if (this.row - 1 > 0)
+      actions.add(Action.UP);
+    if (this.row + 1 < 15)
+      actions.add(Action.DOWN);
+    return actions;
+  }
+  
+}
+
+enum Action {
+  UP, LEFT, RIGHT, DOWN;
 }
