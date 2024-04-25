@@ -85,6 +85,22 @@ void setup(){
   allTrees[1] = new Tree(280,230);//280,230(300,300)
   allTrees[2] = new Tree(530, 520);//530, 520(500,500);
 
+  // Set some nodes to occupied
+  grid.getNode(4, 3).isEmpty = false;
+  grid.getNode(5, 3).isEmpty = false;
+  grid.getNode(4, 4).isEmpty = false;
+  grid.getNode(5, 4).isEmpty = false;
+  grid.getNode(3, 10).isEmpty = false;
+  grid.getNode(4, 10).isEmpty = false;
+  grid.getNode(3, 11).isEmpty = false;
+  grid.getNode(4, 11).isEmpty = false;
+  grid.getNode(3, 12).isEmpty = false;
+  grid.getNode(4, 12).isEmpty = false;
+  grid.getNode(9, 9).isEmpty = false;
+  grid.getNode(10, 9).isEmpty = false;
+  grid.getNode(9, 10).isEmpty = false;
+  grid.getNode(10, 10).isEmpty = false;
+
   // Skapa alla skott
   for (int i = 0; i < allShots.length; i++) {
     allShots[i] = new CannonBall();
@@ -102,7 +118,7 @@ void setup(){
   
  
   // nytt Team: id, color, tank0pos, id, shot
-  teams[0] = new Team1(0, tank_size, team0Color, 
+  teams[0] = new Team1(0, tank_size, team0Color, team1Color, 
                       team0_tank0_startpos, 0, allShots[0],
                       team0_tank1_startpos, 1, allShots[1],
                       team0_tank2_startpos, 2, allShots[2]);
@@ -110,8 +126,10 @@ void setup(){
   allTanks[0] = teams[0].tanks[0];
   allTanks[1] = teams[0].tanks[1];
   allTanks[2] = teams[0].tanks[2];
+  grid.getNode(0, 2).isEmpty = false;
+  grid.getNode(0, 4).isEmpty = false;
   
-  teams[1] = new Team2(1, tank_size, team1Color, 
+  teams[1] = new Team2(1, tank_size, team1Color, team0Color,
                       team1_tank0_startpos, 3, allShots[3],
                       team1_tank1_startpos, 4, allShots[4],
                       team1_tank2_startpos, 5, allShots[5]);
@@ -119,6 +137,8 @@ void setup(){
   allTanks[3] = teams[1].tanks[0];
   allTanks[4] = teams[1].tanks[1];
   allTanks[5] = teams[1].tanks[2];
+  grid.getNode(14, 10).isEmpty = false;
+  grid.getNode(14, 12).isEmpty = false;
   
   loadShots();
   userControl = false;

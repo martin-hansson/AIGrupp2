@@ -44,6 +44,15 @@ class Node {
     angle = tempAngle;
   } 
 
+  Node(Node node) {
+    this.position = new PVector(node.position.x, node.position.y);
+    this.col = node.col;
+    this.row = node.row;
+    this.content = node.content;
+    this.isEmpty = node.isEmpty;
+    this.fill = node.fill;
+  }
+
   //***************************************************  
   void addContent(Sprite s) {
     if (this.isEmpty) {
@@ -61,32 +70,15 @@ class Node {
     return this.content;
   }
 
-  int getNumNeighbors() {
-    int num = 0;
-    if (this.col - 1 > 0)
-      num++;
-    
-    if (this.col + 1 < 15)
-      num++;
-    
-    if (this.row - 1 > 0)
-      num++;
-
-    if (this.row + 1 < 15)
-      num++;
-
-    return num;
-  }
-
   List<Action> getActions() {
     List<Action> actions = new ArrayList<Action>();
-    if (this.col - 1 > 0)
-      actions.add(Action.LEFT);
-    if (this.col + 1 < 15)
+    if (this.col - 1 > 0 && this.isEmpty)
+      actions.add(Action.LEFT );
+    if (this.col + 1 < 15 && this.isEmpty)
       actions.add(Action.RIGHT);
-    if (this.row - 1 > 0)
+    if (this.row - 1 > 0 && this.isEmpty)
       actions.add(Action.UP);
-    if (this.row + 1 < 15)
+    if (this.row + 1 < 15 && this.isEmpty)
       actions.add(Action.DOWN);
     return actions;
   }

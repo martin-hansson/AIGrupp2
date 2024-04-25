@@ -13,18 +13,20 @@ class Team {
   float homebase_height = 350;
 
   color team_color;
+  color opponent_color;
 
   int numberOfHits; // sammalagda antalet bekräftade träffar på andra lagets tanks. 
 
 
-  Team (int team_id, int tank_size, color c, 
+  Team (int team_id, int tank_size, color team_color, color opponent_color,
     PVector tank0_startpos, int tank0_id, CannonBall ball0, 
     PVector tank1_startpos, int tank1_id, CannonBall ball1, 
     PVector tank2_startpos, int tank2_id, CannonBall ball2) 
   {
     this.id = team_id;
     this.tank_size = tank_size;
-    this.team_color = c;
+    this.team_color = team_color;
+    this.opponent_color = opponent_color;
     this.tank0_startpos.set(tank0_startpos);
     this.tank1_startpos.set(tank1_startpos);
     this.tank2_startpos.set(tank2_startpos);

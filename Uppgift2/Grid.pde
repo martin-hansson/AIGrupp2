@@ -13,6 +13,19 @@ class Grid {
     createGrgetId();
   }
 
+  Grid(Grid grid) {
+    cols = grid.cols;
+    rows = grid.rows;
+    grid_size = grid.grid_size;
+    nodes = new Node[cols][rows];
+
+    for (int i = 0; i < cols; i++) {
+      for (int j = 0; j < rows; j++) {
+        nodes[i][j] = new Node(grid.nodes[i][j]);
+      }
+    }
+  }
+
   //***************************************************  
   void createGrgetId() {
 
@@ -179,6 +192,41 @@ class Grid {
 
   Node getNode(int col, int row) {
     return nodes[col][row];
+  }
+
+  Node result(Node current, Action action, color player) {
+    Node next = null;
+    switch (action) {
+      case UP:
+        next =  getNode(current.col, current.row - 1);
+        break;
+      case DOWN:
+        next = getNode(current.col, current.row + 1);
+        break;
+      case LEFT:
+        next = getNode(current.col - 1, current.row);
+        break;
+      case RIGHT:
+        next = getNode(current.col + 1, current.row);
+        break;
+    }
+    next.fill = player;
+    return next;
+  }
+
+  int utility(color player) {
+    int myScore = 0;
+    int opponentScore = 0;
+    for (Node[] rows : nodes) {
+      for (Node node : rows) {
+        if (node.fill == player)
+          myScore++;
+        else
+          opponentScore++;
+      }
+    }
+
+    return myScore - opponentScore;
   }
   
 }
