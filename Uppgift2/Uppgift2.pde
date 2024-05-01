@@ -21,6 +21,8 @@ int cols = 15;
 int rows = 15;
 int grid_size = 50;
 
+Game game;
+
 // Boolean variables connected to keys
 boolean left, right, up, down;
 boolean fire;
@@ -115,10 +117,11 @@ void setup(){
   team1_tank0_startpos = new PVector(width-50, height-250);
   team1_tank1_startpos = new PVector(width-50, height-150);
   team1_tank2_startpos = new PVector(width-50, height-50);
-  
+
+  game = new Game(grid);
  
   // nytt Team: id, color, tank0pos, id, shot
-  teams[0] = new Team1(0, tank_size, team0Color, team1Color, 
+  teams[0] = new Team1(game, 0, tank_size, team0Color, team1Color, 
                       team0_tank0_startpos, 0, allShots[0],
                       team0_tank1_startpos, 1, allShots[1],
                       team0_tank2_startpos, 2, allShots[2]);
@@ -129,7 +132,7 @@ void setup(){
   grid.getNode(0, 2).isEmpty = false;
   grid.getNode(0, 4).isEmpty = false;
   
-  teams[1] = new Team2(1, tank_size, team1Color, team0Color,
+  teams[1] = new Team2(game, 1, tank_size, team1Color, team0Color,
                       team1_tank0_startpos, 3, allShots[3],
                       team1_tank1_startpos, 4, allShots[4],
                       team1_tank2_startpos, 5, allShots[5]);
@@ -139,6 +142,10 @@ void setup(){
   allTanks[5] = teams[1].tanks[2];
   grid.getNode(14, 10).isEmpty = false;
   grid.getNode(14, 12).isEmpty = false;
+
+  game.playerTeam = teams[0];
+  game.opponentTeam = teams[1];
+  game.currentTeam = game.playerTeam;
   
   loadShots();
   userControl = false;

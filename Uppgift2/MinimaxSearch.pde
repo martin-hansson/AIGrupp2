@@ -1,15 +1,13 @@
 class MinimaxSearch {
     int LIMIT = 3;
 
+    Game game;
     Grid grid;
-    color player;
-    color opponent;
     int depth;
 
-    MinimaxSearch(Grid grid, color player, color opponent) {
-        this.grid = new Grid(grid);
-        this.player = player;
-        this.opponent = opponent;
+    MinimaxSearch(Game game) {
+        this.game = game;
+        this.grid = new Grid(game.grid);
         this.depth = 0;
     }
 
@@ -20,13 +18,14 @@ class MinimaxSearch {
 
     Move maxValue(Node current, int depth) {
         if (depth == LIMIT) {
-            return new Move(grid.utility(player), null);
+            return new Move(game.utility(), null);
         }
 
         Move move = new Move(Integer.MIN_VALUE, null);
-        for (Action action : current.getActions()) {
-            println("MAX: " + depth + ":" + action);
-            Move nextMove = minValue(grid.result(current, action, player), depth + 1);
+        for (Action action : game.getActions(current)) {
+            Node nextNode = game.result(current, action);
+            println("MAX: " + depth + ":" + action + ":(" + nextNode.row + "," + nextNode.col + ")");
+            Move nextMove = minValue(nextNode, depth + 1);
             if (nextMove.value > move.value) {
                 move.value = nextMove.value;
                 move.action = action;
@@ -38,13 +37,14 @@ class MinimaxSearch {
 
     Move minValue(Node current, int depth) {
         if (depth == LIMIT) {
-            return new Move(grid.utility(opponent), null);
+            return new Move(game.utility(), null);
         }
 
         Move move = new Move(Integer.MAX_VALUE, null);
-        for (Action action : current.getActions()) {
-            println("MIN: " + depth + ":" + action);
-            Move nextMove = maxValue(grid.result(current, action, opponent), depth + 1);
+        for (Action action : game.getActions(current)) {
+            Node nextNode = game.result(current, action);
+            println("MIN: " + depth + ":" + action + ":(" + nextNode.row + "," + nextNode.col + ")");
+            Move nextMove = maxValue(nextNode, depth + 1);
             if (nextMove.value < move.value) {
                 move.value = nextMove.value;
                 move.action = action;

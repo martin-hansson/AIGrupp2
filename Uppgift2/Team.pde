@@ -15,14 +15,16 @@ class Team {
   color team_color;
   color opponent_color;
 
-  int numberOfHits; // sammalagda antalet bekräftade träffar på andra lagets tanks. 
+  int numberOfHits; // sammalagda antalet bekräftade träffar på andra lagets tanks.
 
+  Game game; 
 
-  Team (int team_id, int tank_size, color team_color, color opponent_color,
+  Team (Game game, int team_id, int tank_size, color team_color, color opponent_color,
     PVector tank0_startpos, int tank0_id, CannonBall ball0, 
     PVector tank1_startpos, int tank1_id, CannonBall ball1, 
     PVector tank2_startpos, int tank2_id, CannonBall ball2) 
   {
+    this.game = game;
     this.id = team_id;
     this.tank_size = tank_size;
     this.team_color = team_color;

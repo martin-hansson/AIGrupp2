@@ -194,39 +194,5 @@ class Grid {
     return nodes[col][row];
   }
 
-  Node result(Node current, Action action, color player) {
-    Node next = null;
-    switch (action) {
-      case UP:
-        next =  getNode(current.col, current.row - 1);
-        break;
-      case DOWN:
-        next = getNode(current.col, current.row + 1);
-        break;
-      case LEFT:
-        next = getNode(current.col - 1, current.row);
-        break;
-      case RIGHT:
-        next = getNode(current.col + 1, current.row);
-        break;
-    }
-    next.fill = player;
-    return next;
-  }
-
-  int utility(color player) {
-    int myScore = 0;
-    int opponentScore = 0;
-    for (Node[] rows : nodes) {
-      for (Node node : rows) {
-        if (node.fill == player)
-          myScore++;
-        else
-          opponentScore++;
-      }
-    }
-
-    return myScore - opponentScore;
-  }
   
 }

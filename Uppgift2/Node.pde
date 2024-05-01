@@ -69,22 +69,5 @@ class Node {
   Sprite content() {
     return this.content;
   }
-
-  List<Action> getActions() {
-    List<Action> actions = new ArrayList<Action>();
-    if (this.col - 1 > 0 && this.isEmpty)
-      actions.add(Action.LEFT );
-    if (this.col + 1 < 15 && this.isEmpty)
-      actions.add(Action.RIGHT);
-    if (this.row - 1 > 0 && this.isEmpty)
-      actions.add(Action.UP);
-    if (this.row + 1 < 15 && this.isEmpty)
-      actions.add(Action.DOWN);
-    return actions;
-  }
   
-}
-
-enum Action {
-  UP, LEFT, RIGHT, DOWN;
 }
