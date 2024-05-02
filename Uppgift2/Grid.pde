@@ -54,7 +54,13 @@ class Grid {
     for (int i = 0; i < cols; i++) {
       for (int j = 0; j < rows; j++) {
         // Initialize each object
-        ellipse(nodes[i][j].position.x, nodes[i][j].position.y, 5.0, 5.0);
+        if (nodes[i][j].isFilled) {
+          fill(nodes[i][j].fill);
+          ellipse(nodes[i][j].position.x, nodes[i][j].position.y, 5.0, 5.0);
+        } else {
+          noFill();
+          ellipse(nodes[i][j].position.x, nodes[i][j].position.y, 5.0, 5.0);
+        }
         //println("nodes[i][j].position.x: " + nodes[i][j].position.x);
         //println(nodes[i][j]);
       }

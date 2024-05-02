@@ -13,18 +13,19 @@ class MinimaxSearch {
 
     Action search(Node start) {
         Move move = maxValue(start, depth);
+        game.reset(); 
         return move.action;
     }
 
     Move maxValue(Node current, int depth) {
-        if (depth == LIMIT) {
-            return new Move(game.utility(), null);
+        if (depth > LIMIT) {
+            return new Move(game.utility(game.playerTeam), null);
         }
 
         Move move = new Move(Integer.MIN_VALUE, null);
         for (Action action : game.getActions(current)) {
-            Node nextNode = game.result(current, action);
-            println("MAX: " + depth + ":" + action + ":(" + nextNode.row + "," + nextNode.col + ")");
+            Node nextNode = game.result(current, action, game.playerTeam);
+            println("MAX: " + depth + ":" + action + ":(" + current.row + "," + current.col + ")");
             Move nextMove = minValue(nextNode, depth + 1);
             if (nextMove.value > move.value) {
                 move.value = nextMove.value;
@@ -36,19 +37,20 @@ class MinimaxSearch {
     }
 
     Move minValue(Node current, int depth) {
-        if (depth == LIMIT) {
-            return new Move(game.utility(), null);
+        if (depth > LIMIT) {
+            return new Move(game.utility(game.opponentTeam), null);
         }
 
         Move move = new Move(Integer.MAX_VALUE, null);
         for (Action action : game.getActions(current)) {
-            Node nextNode = game.result(current, action);
-            println("MIN: " + depth + ":" + action + ":(" + nextNode.row + "," + nextNode.col + ")");
+            Node nextNode = game.result(current, action, game.opponentTeam);
+            println("MIN: " + depth + ":" + action + ":(" + current.row + "," + current.col + ")");
             Move nextMove = maxValue(nextNode, depth + 1);
             if (nextMove.value < move.value) {
                 move.value = nextMove.value;
                 move.action = action;
             }
+            current.fill = 0;
         }
         return move;
     }

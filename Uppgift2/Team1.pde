@@ -140,6 +140,7 @@ class Team1 extends Team {
 
       this.started = false; 
       grid.getNearestNode(this.position).fill = this.team.team_color;
+      grid.getNearestNode(this.position).isFilled = true;
 
       //this.isMoving = true;
       //moveTo(grid.getRandomNodePosition());
@@ -167,12 +168,16 @@ class Team1 extends Team {
       //rotateTo(grid.getRandomNodePosition());  // Rotera mot ett slumpmässigt mål.
       Node node = getNextMove(grid.getNearestNode(this.position));
       node.fill = this.team.team_color;
+      node.isFilled = true;
       moveTo(node.position); // Slumpmässigt mål.
     }
 
     public Node getNextMove(Node current) {
       Action next = new MinimaxSearch(this.team.game).search(current);
+
       Node node = null;
+      
+
       switch (next) {
         case UP:
           node = grid.getNode(current.col, current.row - 1);

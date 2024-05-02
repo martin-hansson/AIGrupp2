@@ -146,6 +146,7 @@ void setup(){
   game.playerTeam = teams[0];
   game.opponentTeam = teams[1];
   game.currentTeam = game.playerTeam;
+  game.reset();
   
   loadShots();
   userControl = false;
@@ -192,7 +193,7 @@ void draw() {
    
     // CHECK FOR COLLISIONS
     checkForCollisionsShots(); 
-    checkForCollisionsTanks();  
+    checkForCollisionsTanks();
     
   }
   

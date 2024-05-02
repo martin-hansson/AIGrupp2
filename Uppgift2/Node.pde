@@ -16,6 +16,7 @@ class Node {
   color RED = color(255, 0, 0);
   color BLUE = color(0, 0, 255);
   color fill;
+  boolean isFilled = false;
   
   //***************************************************
   // Node Constructor 
