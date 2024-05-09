@@ -13,10 +13,10 @@ class Node {
   
   Sprite content;
   boolean isEmpty;
-  color RED = color(255, 0, 0);
-  color BLUE = color(0, 0, 255);
-  color fill;
+  Team fill;
   Team claimed;
+  color RED = color(204, 50, 50);
+  color BLUE = color(0, 150, 200);
   
   //***************************************************
   // Node Constructor 
@@ -45,13 +45,13 @@ class Node {
     angle = tempAngle;
   } 
 
-  Node(Node node) {
-    this.position = new PVector(node.position.x, node.position.y);
-    this.col = node.col;
-    this.row = node.row;
-    this.content = node.content;
-    this.isEmpty = node.isEmpty;
-    this.fill = node.fill;
+  Node copy() {
+    Node copy = new Node(this.col, this.row, this.position.x, this.position.y);
+    copy.fill = this.fill;
+    copy.claimed = this.claimed;
+    copy.content = this.content;
+    copy.isEmpty = this.isEmpty;
+    return copy;
   }
 
   //***************************************************  

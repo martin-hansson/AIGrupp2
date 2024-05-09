@@ -139,7 +139,7 @@ class Team1 extends Team {
       super(id, team, startpos, diameter, ball);
 
       this.started = false; 
-      grid.getNearestNode(this.position).fill = this.team.team_color;
+      grid.getNearestNode(this.position).fill = this.team;
       grid.getNearestNode(this.position).claimed = this.team;
 
       //this.isMoving = true;
@@ -174,16 +174,18 @@ class Team1 extends Team {
     public Node getNextMove(Node current) {
       Action action = new AlphaBetaSearch(this.team.game, this.team).search(current);
       GameState state = game.result(current, action, this.team);
+      game.reset();
       Random random = new Random();
       int index = random.nextInt(state.moveSet.size());
       return state.moveSet.get(index);
+      // return state.moveSet.get(state.moveSet.size() - 1);
     }
 
     void update() {
       super.update();
       if (this.isMoving) {
         Node node = grid.getNearestNode(this.position);
-        node.fill = this.team.team_color;
+        node.fill = this.team;
         node.claimed = this.team;
       }
     }
@@ -274,7 +276,6 @@ class Team1 extends Team {
         if (this.idle_state) {
           wander();
         }
-        
         
       }
     }

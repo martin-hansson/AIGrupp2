@@ -1,12 +1,14 @@
 import java.util.List;
 
 class GameState {
-    Node opponent;
     List<Node> moveSet;
+    Node opponent;
+    Game game;
 
-    GameState(Node opponent, List<Node> moveSet) {
-        this.opponent = opponent;
+    GameState(List<Node> moveSet, Node opponent, Game game) {
         this.moveSet = moveSet;
+        this.opponent = opponent;
+        this.game = game.copy();
     }
 
 }

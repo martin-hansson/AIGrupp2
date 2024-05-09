@@ -15,15 +15,25 @@ class Game {
         this.grid = grid;
     }
 
+    Game copy() {
+        Game copy = new Game(grid.copy());
+        copy.playerTeam = this.playerTeam;
+        copy.opponentTeam = this.opponentTeam;
+        copy.currentTeam = this.currentTeam;
+        copy.playerPosition = this.playerPosition;
+        copy.opponentPosition = this.opponentPosition;
+        return copy;
+    }
+
     void reset() {
         this.playerPosition = this.grid.getNearestNode(playerTeam.tanks[0].position);
         this.opponentPosition = this.grid.getNearestNode(opponentTeam.tanks[2].position);
         for (Node[] rows : this.grid.nodes) {
             for (Node node : rows) {
                 if (node.claimed == null)
-                    node.fill = 0;
+                    node.fill = null;
                 else if (node.claimed != null)
-                    node.fill = node.claimed.team_color;
+                    node.fill = node.claimed;
             }
         }
     }
@@ -31,7 +41,7 @@ class Game {
     void reset(List<Node> moveSet) {
         for (Node node : moveSet) {
             if (node.claimed == null) {
-                node.fill = 0;
+                node.fill = null;
             }
         }
     }
@@ -39,49 +49,50 @@ class Game {
     GameState result(Node current, Action action, Team player) {
         List<Node> moveSet = new ArrayList<Node>();
         // moveSet.add(current);
-        if (current.fill == 0)
-            current.fill = player.team_color;
+        if (current.fill == null)
+            current.fill = player;
         
         Node next = current;
         switch (action) {
             case UP:
                 while (next.row - 1 >= 0 && grid.nodes[next.col][next.row - 1].isEmpty) {
-                    next.fill = player.team_color;
+                    next.fill = player;
                     next = grid.nodes[next.col][next.row - 1];
                     moveSet.add(next);
                 }
                 break;
             case DOWN:
                 while (next.row + 1 < 15 && grid.nodes[next.col][next.row + 1].isEmpty) {
-                    next.fill = player.team_color;
+                    next.fill = player;
                     next = grid.nodes[next.col][next.row + 1];
                     moveSet.add(next);
                 }
                 break;
             case LEFT:
                 while (next.col - 1 >= 0 && grid.nodes[next.col - 1][next.row].isEmpty) {
-                    next.fill = player.team_color;
+                    next.fill = player;
                     next = grid.nodes[next.col - 1][next.row];
                     moveSet.add(next);
                 }
                 break;
             case RIGHT:
                 while (next.col + 1 < 15 && grid.nodes[next.col + 1][next.row].isEmpty) {
-                    next.fill = player.team_color;
+                    next.fill = player;
                     next = grid.nodes[next.col + 1][next.row];
                     moveSet.add(next);
                 }
                 break;
         }
+        next.fill = player;
 
         if (player == playerTeam) {
             playerPosition = next;
             currentTeam = opponentTeam;
-            return new GameState(opponentPosition, moveSet);
+            return new GameState(moveSet, opponentPosition, this);
         } else {
             opponentPosition = next;
             currentTeam = playerTeam;
-            return new GameState(playerPosition, moveSet);
+            return new GameState(moveSet, playerPosition, this);
         }
     }
 
@@ -98,37 +109,20 @@ class Game {
     }
 
     int utility(Team player) {
-        /*Team currentPlayer;
-        if (player == playerTeam) {
-            currentPlayer = playerTeam;
-        } else {
-            currentPlayer = opponentTeam;
-        }
-
-        int myScore = 0;
+        // this.grid.print();
+        int playerScore = 0;
         int opponentScore = 0;
+
         for (Node[] rows : this.grid.nodes) {
             for (Node node : rows) {
-                if (node.claimed == currentPlayer)
-                    myScore--;
-                else if (node.fill == currentPlayer.team_color)
-                    myScore++;
-                else if (node.fill != currentPlayer.team_color && node.fill != 0)
+                if (node.fill == player)
+                    playerScore++;
+                if (node.fill != player && node.fill != null)
                     opponentScore++;
             }
         }
-        println("My score: " + myScore + " Opponent score: " + opponentScore);
-        return myScore - opponentScore;*/
 
-        int utility = 0;
-        for (Node[] rows : this.grid.nodes) {
-            for (Node node : rows) {
-                if (node.fill == player.team_color)
-                    utility++;
-            }
-        }
-
-        return utility;
+        return playerScore - opponentScore;
     }
 
     List<Action> getActions(Node current) {
@@ -146,7 +140,7 @@ class Game {
             if (grid.nodes[current.col][current.row + 1].isEmpty)
                 actions.add(Action.DOWN);
         
-        Collections.shuffle(actions);
+        //Collections.shuffle(actions);
         return actions;
     }
 }

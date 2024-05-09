@@ -13,17 +13,16 @@ class Grid {
     createGrgetId();
   }
 
-  Grid(Grid grid) {
-    cols = grid.cols;
-    rows = grid.rows;
-    grid_size = grid.grid_size;
-    nodes = new Node[cols][rows];
+  Grid copy() {
+    Grid copy = new Grid(cols, rows, grid_size);
 
     for (int i = 0; i < cols; i++) {
       for (int j = 0; j < rows; j++) {
-        nodes[i][j] = new Node(grid.nodes[i][j]);
+        copy.nodes[i][j] = this.nodes[i][j].copy();
       }
     }
+
+    return copy;
   }
 
   //***************************************************  
@@ -55,7 +54,7 @@ class Grid {
       for (int j = 0; j < rows; j++) {
         // Initialize each object
         if (nodes[i][j].claimed != null) {
-          fill(nodes[i][j].fill);
+          fill(nodes[i][j].claimed.team_color);
           ellipse(nodes[i][j].position.x, nodes[i][j].position.y, 5.0, 5.0);
         } else {
           noFill();
@@ -198,6 +197,21 @@ class Grid {
 
   Node getNode(int col, int row) {
     return nodes[col][row];
+  }
+
+  void print() {
+    for (Node[] rows : nodes) {
+      for (Node node : rows) {
+        if (node.fill != null && node.fill.team_color == node.RED) {
+          System.out.print("R" + "(" + node.row + "," + node.col + ")" + " ");
+        } else if (node.fill != null && node.fill.team_color == node.BLUE) {
+          System.out.print("B" + "(" + node.row + "," + node.col + ")" + " ");
+        } else {
+          System.out.print("N" + "(" + node.row + "," + node.col + ")" + " ");
+        }
+      }
+      println();
+    }
   }
 
   

@@ -10,6 +10,9 @@ class Team2 extends Team {
     tanks[1] = new Tank(tank1_id, this, this.tank1_startpos, this.tank_size, ball1);
     tanks[2] = new MinimaxAgent(tank2_id, this, this.tank2_startpos, this.tank_size, ball2);
 
+    grid.getNode(14, 14).fill = this;
+    grid.getNode(14, 14).claimed = this;
+
     //this.homebase_x = width - 151;
     //this.homebase_y = height - 351;
   }
@@ -31,7 +34,7 @@ class Team2 extends Team {
       super(id, team, startpos, diameter, ball);
 
       this.started = false; 
-      grid.getNearestNode(this.position).fill = this.team.team_color;
+      grid.getNearestNode(this.position).fill = this.team;
       grid.getNearestNode(this.position).claimed = this.team;
 
       //this.isMoving = true;
@@ -66,16 +69,18 @@ class Team2 extends Team {
     public Node getNextMove(Node current) {
       Action action = new MinimaxSearch(this.team.game, this.team).search(current);
       GameState state = game.result(current, action, this.team);
+      game.reset();
       Random random = new Random();
       int index = random.nextInt(state.moveSet.size());
       return state.moveSet.get(index);
+      // return state.moveSet.get(state.moveSet.size() - 1);
     }
 
     void update() {
       super.update();
       if (this.isMoving) {
         Node node = grid.getNearestNode(this.position);
-        node.fill = this.team.team_color;
+        node.fill = this.team;
         node.claimed = this.team;
       }
     }
@@ -84,6 +89,7 @@ class Team2 extends Team {
     // Tanken meddelas om kollision med trädet.
     public void message_collision(Tree other) {
       println("*** Team"+this.team_id+".Tank["+ this.getId() + "].collision(Tree)");
+      moveTo(grid.getNearestNode(this.position).position);
       wander();
     }
 
