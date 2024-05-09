@@ -43,7 +43,7 @@ Tank[] allTanks = new Tank[6];
 
 Team[] teams = new Team[2];
 
-int tank_size = 50;
+int tank_size = 45;
 // Team0
 PVector team0_tank0_startpos;
 PVector team0_tank1_startpos;

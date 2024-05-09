@@ -826,7 +826,7 @@ class Tank extends Sprite { //<>//
 
   //**************************************************
   // Called from game
-  final void update() {
+  void update() {
 
     // Om tanken fortfarande lever.
     if (!this.isDestroyed) {

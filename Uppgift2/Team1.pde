@@ -140,7 +140,7 @@ class Team1 extends Team {
 
       this.started = false; 
       grid.getNearestNode(this.position).fill = this.team.team_color;
-      grid.getNearestNode(this.position).isFilled = true;
+      grid.getNearestNode(this.position).claimed = this.team;
 
       //this.isMoving = true;
       //moveTo(grid.getRandomNodePosition());
@@ -167,32 +167,25 @@ class Team1 extends Team {
       println("*** Team"+this.team_id+".Tank["+ this.getId() + "].wander()");
       //rotateTo(grid.getRandomNodePosition());  // Rotera mot ett slumpmässigt mål.
       Node node = getNextMove(grid.getNearestNode(this.position));
-      node.fill = this.team.team_color;
-      node.isFilled = true;
+      this.team.game.playerPosition = node;
       moveTo(node.position); // Slumpmässigt mål.
     }
 
     public Node getNextMove(Node current) {
-      Action next = new MinimaxSearch(this.team.game).search(current);
+      Action action = new AlphaBetaSearch(this.team.game, this.team).search(current);
+      GameState state = game.result(current, action, this.team);
+      Random random = new Random();
+      int index = random.nextInt(state.moveSet.size());
+      return state.moveSet.get(index);
+    }
 
-      Node node = null;
-      
-
-      switch (next) {
-        case UP:
-          node = grid.getNode(current.col, current.row - 1);
-          break;
-        case DOWN:
-          node = grid.getNode(current.col, current.row + 1);
-          break;
-        case RIGHT:
-          node = grid.getNode(current.col + 1, current.row);
-          break;
-        case LEFT:
-          node = grid.getNode(current.col - 1, current.row);
-          break;
+    void update() {
+      super.update();
+      if (this.isMoving) {
+        Node node = grid.getNearestNode(this.position);
+        node.fill = this.team.team_color;
+        node.claimed = this.team;
       }
-      return node;
     }
 
     //*******************************************************

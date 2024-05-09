@@ -1,6 +1,6 @@
 import java.time.LocalDateTime;
 
-class MinimaxSearch {
+class AlphaBetaSearch {
     int LIMIT = 20;
 
     Game game;
@@ -10,7 +10,7 @@ class MinimaxSearch {
     Team maxTeam;
     Team minTeam;
 
-    MinimaxSearch(Game game, Team maxTeam) {
+    AlphaBetaSearch(Game game, Team maxTeam) {
         this.game = game;
         this.grid = new Grid(game.grid);
         this.depth = 0;
@@ -25,14 +25,15 @@ class MinimaxSearch {
     }
 
     Action search(Node start) {
-        println("Minimax start time: " + LocalDateTime.now().toString());
-        Move move = maxValue(start, depth);
+        println("AlphaBeta start time: " + LocalDateTime.now().toString());
+        Move move = maxValue(start, depth, Integer.MIN_VALUE, Integer.MAX_VALUE);
         game.reset();
-        println("Minimax end time: " + LocalDateTime.now().toString());
+        println("AlphaBeta end time: " + LocalDateTime.now().toString());
+
         return move.action;
     }
 
-    Move maxValue(Node current, int depth) {
+    Move maxValue(Node current, int depth, int alpha, int beta) {
         if (depth > LIMIT) {
             return new Move(game.utility(maxTeam), null);
         }
@@ -40,18 +41,22 @@ class MinimaxSearch {
         Move move = new Move(Integer.MIN_VALUE, null);
         for (Action action : game.getActions(current)) {
             GameState state = game.result(current, action, maxTeam);
-            Move nextMove = minValue(state.opponent, depth + 1);
+            Move nextMove = minValue(state.opponent, depth + 1, alpha, beta);
             if (nextMove.value > move.value) {
                 move.value = nextMove.value;
                 move.action = action;
+                alpha = Math.max(alpha, move.value);
             }
             game.reset(state.moveSet);
+            if (move.value >= beta) {
+                return move;
+            }
         }
 
         return move;
     }
 
-    Move minValue(Node current, int depth) {
+    Move minValue(Node current, int depth, int alpha, int beta) {
         if (depth > LIMIT) {
             return new Move(game.utility(minTeam), null);
         }
@@ -59,12 +64,16 @@ class MinimaxSearch {
         Move move = new Move(Integer.MAX_VALUE, null);
         for (Action action : game.getActions(current)) {
             GameState state = game.result(current, action, minTeam);
-            Move nextMove = maxValue(state.opponent, depth + 1);
+            Move nextMove = maxValue(state.opponent, depth + 1, alpha, beta);
             if (nextMove.value < move.value) {
                 move.value = nextMove.value;
                 move.action = action;
+                beta = Math.min(beta, move.value);
             }
             game.reset(state.moveSet);
+            if (move.value <= alpha) {
+                return move;
+            }
         }
         return move;
     }

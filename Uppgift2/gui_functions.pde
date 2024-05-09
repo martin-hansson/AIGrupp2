@@ -11,8 +11,10 @@ void showGUI() {
 
   textSize(14);
   fill(30);
-  text("Team1: "+teams[0].numberOfHits, 10, 20);
-  text("Team2: "+teams[1].numberOfHits, width-100, 20);
+  int redScore = game.score(teams[0]);
+  int blueScore = game.score(teams[1]);
+  text("Team1: "+ redScore, 10, 20);
+  text("Team2: "+ blueScore, width-100, 20);
   textSize(24);
   text(remainingTime, width/2, 25);
   textSize(14);
@@ -53,7 +55,16 @@ void showGUI() {
   if (gameOver) {
     textSize(36);
     fill(30);
-    text("Game Over!", width/2-100, height/2);
+    int redPlayer = game.score(teams[0]);
+    int bluePlayer = game.score(teams[1]);
+    if (redPlayer > bluePlayer) {
+      text("Red Team Wins!", width/2-100, height/2);
+    } else if (redPlayer < bluePlayer) {
+      text("Blue Team Wins!", width/2-100, height/2);
+    } else {
+      text("Draw!", width/2-100, height/2);
+    }
+    // text("Game Over!", width/2-100, height/2);
   }
 }
 //**************************************************
