@@ -1,3 +1,8 @@
+// Grupp 02:
+// Alexandra Jansson alja5888,
+// Tyr Hullmann tyhu6316,
+// Martin Hansson maha6445
+
 /*
     This class uses Minim. When using Processing.js, we don't have 
     access to Minim so we have an equivalent class, SoundManager.js

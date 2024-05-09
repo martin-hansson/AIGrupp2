@@ -1,3 +1,8 @@
+// Grupp 02:
+// Alexandra Jansson alja5888,
+// Tyr Hullmann tyhu6316,
+// Martin Hansson maha6445
+
 import java.util.Collections;
 import java.util.List;
 import java.util.ArrayList;

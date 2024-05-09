@@ -1,3 +1,8 @@
+// Grupp 02:
+// Alexandra Jansson alja5888,
+// Tyr Hullmann tyhu6316,
+// Martin Hansson maha6445
+
 class Team2 extends Team {
 
   Team2(Game game, int team_id, int tank_size, color team_color, color opponent_color, 
