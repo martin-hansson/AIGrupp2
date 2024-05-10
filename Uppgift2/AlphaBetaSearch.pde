@@ -43,7 +43,8 @@ class AlphaBetaSearch {
     Move maxValue(Game game, Node current, int depth, int alpha, int beta) {
         // Om gränsvärdet är nått returneras uppskattat värde av spelet
         if (depth == LIMIT) {
-            return new Move(game.utility(minTeam), null);
+            Team team = LIMIT % 2 == 0 ? maxTeam : minTeam;
+            return new Move(game.utility(team), null);
         }
 
         // Skapar ett tentativt drag och spel för att testa drag
@@ -77,7 +78,8 @@ class AlphaBetaSearch {
     Move minValue(Game game, Node current, int depth, int alpha, int beta) {
         // Om gränsvärdet är nått returneras uppskattat värde av spelet
         if (depth == LIMIT) {
-            return new Move(game.utility(maxTeam), null);
+            Team team = LIMIT % 2 == 0 ? minTeam : maxTeam;
+            return new Move(game.utility(team), null);
         }
 
         // Skapar ett tentativt drag och spel för att testa drag

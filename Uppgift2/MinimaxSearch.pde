@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 // Klass som genomför en Minimax-sökning
 class MinimaxSearch {
-    int LIMIT = 7; // Gränsen för hur djupt sökningen får gå
+    int LIMIT = 8; // Gränsen för hur djupt sökningen får gå
 
     Game game;
     Grid grid;
@@ -42,7 +42,8 @@ class MinimaxSearch {
     Move maxValue(Game game, Node current, int depth) {
         // Om gränsvärdet är nått returneras uppskattat värde av spelet
         if (depth == LIMIT) {
-            return new Move(game.utility(minTeam), null);
+            Team team = LIMIT % 2 == 0 ? maxTeam : minTeam;
+            return new Move(game.utility(team), null);
         }
 
         // Skapar ett tentativt drag och spel för att testa drag
@@ -71,7 +72,8 @@ class MinimaxSearch {
     Move minValue(Game game, Node current, int depth) {
         // Om gränsvärdet är nått returneras uppskattat värde av spelet
         if (depth == LIMIT) {
-            return new Move(game.utility(maxTeam), null);
+            Team team = LIMIT % 2 == 0 ? minTeam : maxTeam;
+            return new Move(game.utility(team), null);
         }
 
         // Skapar ett tentativt drag och spel för att testa drag
