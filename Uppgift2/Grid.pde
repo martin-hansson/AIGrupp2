@@ -204,20 +204,4 @@ class Grid {
     return nodes[col][row];
   }
 
-  void print() {
-    for (Node[] rows : nodes) {
-      for (Node node : rows) {
-        if (node.fill != null && node.fill.team_color == node.RED) {
-          System.out.print("R" + "(" + node.row + "," + node.col + ")" + " ");
-        } else if (node.fill != null && node.fill.team_color == node.BLUE) {
-          System.out.print("B" + "(" + node.row + "," + node.col + ")" + " ");
-        } else {
-          System.out.print("N" + "(" + node.row + "," + node.col + ")" + " ");
-        }
-      }
-      println();
-    }
-  }
-
-  
 }

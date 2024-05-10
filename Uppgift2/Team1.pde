@@ -14,7 +14,7 @@ class Team1 extends Team {
     PVector tank2_startpos, int tank2_id, CannonBall ball2) {
     super(game, team_id, tank_size, team_color, opponent_color, tank0_startpos, tank0_id, ball0, tank1_startpos, tank1_id, ball1, tank2_startpos, tank2_id, ball2);  
 
-    tanks[0] = new MinimaxAgent(tank0_id, this, this.tank0_startpos, this.tank_size, ball0);
+    tanks[0] = new GameAgent(tank0_id, this, this.tank0_startpos, this.tank_size, ball0);
     tanks[1] = new Tank(tank1_id, this, this.tank1_startpos, this.tank_size, ball1);
     tanks[2] = new Tank(tank2_id, this, this.tank2_startpos, this.tank_size, ball2);
 
@@ -22,6 +22,164 @@ class Team1 extends Team {
     //this.homebase_y = 0;
   }
 
+  //==================================================
+  public class GameAgent extends Tank {
+
+    boolean started;
+    Random random = new Random();
+
+    //*******************************************************
+    GameAgent(int id, Team team, PVector startpos, float diameter, CannonBall ball) {
+      super(id, team, startpos, diameter, ball);
+
+      this.started = false; 
+      // Fyll startpositionen med teamets färg
+      grid.getNearestNode(this.position).fill = this.team;
+      grid.getNearestNode(this.position).claimed = this.team;
+
+      //this.isMoving = true;
+      //moveTo(grid.getRandomNodePosition());
+    }
+
+    //*******************************************************
+    // Reterera, fly!
+    public void retreat() {
+      println("*** Team"+this.team_id+".Tank["+ this.getId() + "].retreat()");
+      moveTo(grid.getRandomNodePosition()); // Slumpmässigt mål.
+    }
+
+    //*******************************************************
+    // Reterera i motsatt riktning (ej implementerad!)
+    public void retreat(Tank other) {
+      //println("*** Team"+this.team_id+".Tank["+ this.getId() + "].retreat()");
+      //moveTo(grid.getRandomNodePosition());
+      retreat();
+    }
+
+    //*******************************************************
+    // Fortsätt att vandra runt.
+    public void wander() {
+      println("*** Team"+this.team_id+".Tank["+ this.getId() + "].wander()");
+      //rotateTo(grid.getRandomNodePosition());  // Rotera mot ett slumpmässigt mål.
+      // Hämta nästa drag
+      Node node = getNextMove(grid.getNearestNode(this.position));
+      this.team.game.playerPosition = node;
+      moveTo(node.position);
+    }
+
+    // Hämtar ett drag med hjälp av strategin och returnerar nästa position som tanken ska flytta till
+    public Node getNextMove(Node current) {
+      // Hämtar en handling från sökningen, kan bytas ut mot MinimaxSearch
+      Action action = new AlphaBetaSearch(this.team.game, this.team).search(current);
+      // Hämtar tillståndet av att röra sig från nuvarande nod med handlingen
+      GameState state = game.result(current, action, this.team);
+      // Återställ tentativ färgning
+      game.reset();
+      // Hämta en slumpmässig position i listan av positioner i riktningen
+      int index = random.nextInt(state.moveSet.size());
+      return state.moveSet.get(index);
+    }
+
+    // Överlagrad update för att uppdatera fyllningen under rörelse
+    void update() {
+      super.update();
+      if (this.isMoving) {
+        Node node = grid.getNearestNode(this.position);
+        node.fill = this.team;
+        node.claimed = this.team;
+      }
+    }
+
+    //*******************************************************
+    // Tanken meddelas om kollision med trädet.
+    public void message_collision(Tree other) {
+      println("*** Team"+this.team_id+".Tank["+ this.getId() + "].collision(Tree)");
+      wander();
+    }
+
+    //*******************************************************
+    // Tanken meddelas om kollision med tanken.
+    public void message_collision(Tank other) {
+      println("*** Team"+this.team_id+".Tank["+ this.getId() + "].collision(Tank)");
+
+      //moveTo(new PVector(int(random(width)),int(random(height))));
+      //println("this.getName());" + this.getName()+ ", this.team_id: "+ this.team_id);
+      //println("other.getName());" + other.getName()+ ", other.team_id: "+ other.team_id);
+
+      if ((other.getName() == "tank") && (other.team_id != this.team_id)) {
+        if (this.hasShot && (!other.isDestroyed)) {
+          println("["+this.team_id+":"+ this.getId() + "] SKJUTER PÅ ["+ other.team_id +":"+other.getId()+"]");
+          fire();
+        } else {
+          retreat(other);
+        }
+
+        rotateTo(other.position);
+        //wander();
+      } else {
+        wander();
+      }
+    }
+    
+    //*******************************************************  
+    // Tanken meddelas om den har kommit hem.
+    public void message_arrivedAtHomebase() {
+      //println("*** Team"+this.team_id+".Tank["+ this.getId() + "].message_isAtHomebase()");
+      println("! Hemma!!! Team"+this.team_id+".Tank["+ this.getId() + "]");
+    }
+
+    //*******************************************************
+    // används inte.
+    public void readyAfterHit() {
+      super.readyAfterHit();
+      println("*** Team"+this.team_id+".Tank["+ this.getId() + "].readyAfterHit()");
+
+      //moveTo(grid.getRandomNodePosition());
+      wander();
+    }
+
+    //*******************************************************
+    public void arrivedRotation() {
+      super.arrivedRotation();
+      println("*** Team"+this.team_id+".Tank["+ this.getId() + "].arrivedRotation()");
+      //moveTo(new PVector(int(random(width)),int(random(height))));
+      arrived();
+    }
+
+    //*******************************************************
+    public void arrived() {
+      super.arrived();
+      println("*** Team"+this.team_id+".Tank["+ this.getId() + "].arrived()");
+
+      //moveTo(new PVector(int(random(width)),int(random(height))));
+      //moveTo(grid.getRandomNodePosition());
+      wander();
+    }
+
+    //*******************************************************
+    public void updateLogic() {
+      super.updateLogic();
+
+      if (!started) {
+        started = true;
+        wander();
+      }
+
+      if (!this.userControlled) {
+
+        //moveForward_state();
+        if (this.stop_state) {
+          //rotateTo()
+          wander();
+        }
+
+        if (this.idle_state) {
+          wander();
+        }
+        
+      }
+    }
+  }
 
   //==================================================
   public class Tank1 extends Tank {
@@ -129,159 +287,6 @@ class Team1 extends Team {
           //rotateTo()
           chooseAction();
         }
-      }
-    }
-  }
-
-  //==================================================
-  public class MinimaxAgent extends Tank {
-
-    boolean started;
-    Random random = new Random();
-
-    //*******************************************************
-    MinimaxAgent(int id, Team team, PVector startpos, float diameter, CannonBall ball) {
-      super(id, team, startpos, diameter, ball);
-
-      this.started = false; 
-      grid.getNearestNode(this.position).fill = this.team;
-      grid.getNearestNode(this.position).claimed = this.team;
-
-      //this.isMoving = true;
-      //moveTo(grid.getRandomNodePosition());
-    }
-
-    //*******************************************************
-    // Reterera, fly!
-    public void retreat() {
-      println("*** Team"+this.team_id+".Tank["+ this.getId() + "].retreat()");
-      moveTo(grid.getRandomNodePosition()); // Slumpmässigt mål.
-    }
-
-    //*******************************************************
-    // Reterera i motsatt riktning (ej implementerad!)
-    public void retreat(Tank other) {
-      //println("*** Team"+this.team_id+".Tank["+ this.getId() + "].retreat()");
-      //moveTo(grid.getRandomNodePosition());
-      retreat();
-    }
-
-    //*******************************************************
-    // Fortsätt att vandra runt.
-    public void wander() {
-      println("*** Team"+this.team_id+".Tank["+ this.getId() + "].wander()");
-      //rotateTo(grid.getRandomNodePosition());  // Rotera mot ett slumpmässigt mål.
-      Node node = getNextMove(grid.getNearestNode(this.position));
-      this.team.game.playerPosition = node;
-      moveTo(node.position); // Slumpmässigt mål.
-    }
-
-    public Node getNextMove(Node current) {
-      Action action = new AlphaBetaSearch(this.team.game, this.team).search(current);
-      GameState state = game.result(current, action, this.team);
-      game.reset();
-      Random random = new Random();
-      int index = random.nextInt(state.moveSet.size());
-      return state.moveSet.get(index);
-      // return state.moveSet.get(state.moveSet.size() - 1);
-    }
-
-    void update() {
-      super.update();
-      if (this.isMoving) {
-        Node node = grid.getNearestNode(this.position);
-        node.fill = this.team;
-        node.claimed = this.team;
-      }
-    }
-
-    //*******************************************************
-    // Tanken meddelas om kollision med trädet.
-    public void message_collision(Tree other) {
-      println("*** Team"+this.team_id+".Tank["+ this.getId() + "].collision(Tree)");
-      wander();
-    }
-
-    //*******************************************************
-    // Tanken meddelas om kollision med tanken.
-    public void message_collision(Tank other) {
-      println("*** Team"+this.team_id+".Tank["+ this.getId() + "].collision(Tank)");
-
-      //moveTo(new PVector(int(random(width)),int(random(height))));
-      //println("this.getName());" + this.getName()+ ", this.team_id: "+ this.team_id);
-      //println("other.getName());" + other.getName()+ ", other.team_id: "+ other.team_id);
-
-      if ((other.getName() == "tank") && (other.team_id != this.team_id)) {
-        if (this.hasShot && (!other.isDestroyed)) {
-          println("["+this.team_id+":"+ this.getId() + "] SKJUTER PÅ ["+ other.team_id +":"+other.getId()+"]");
-          fire();
-        } else {
-          retreat(other);
-        }
-
-        rotateTo(other.position);
-        //wander();
-      } else {
-        wander();
-      }
-    }
-    
-    //*******************************************************  
-    // Tanken meddelas om den har kommit hem.
-    public void message_arrivedAtHomebase() {
-      //println("*** Team"+this.team_id+".Tank["+ this.getId() + "].message_isAtHomebase()");
-      println("! Hemma!!! Team"+this.team_id+".Tank["+ this.getId() + "]");
-    }
-
-    //*******************************************************
-    // används inte.
-    public void readyAfterHit() {
-      super.readyAfterHit();
-      println("*** Team"+this.team_id+".Tank["+ this.getId() + "].readyAfterHit()");
-
-      //moveTo(grid.getRandomNodePosition());
-      wander();
-    }
-
-    //*******************************************************
-    public void arrivedRotation() {
-      super.arrivedRotation();
-      println("*** Team"+this.team_id+".Tank["+ this.getId() + "].arrivedRotation()");
-      //moveTo(new PVector(int(random(width)),int(random(height))));
-      arrived();
-    }
-
-    //*******************************************************
-    public void arrived() {
-      super.arrived();
-      println("*** Team"+this.team_id+".Tank["+ this.getId() + "].arrived()");
-
-      //moveTo(new PVector(int(random(width)),int(random(height))));
-      //moveTo(grid.getRandomNodePosition());
-      wander();
-    }
-
-    //*******************************************************
-    public void updateLogic() {
-      super.updateLogic();
-
-      if (!started) {
-        started = true;
-        wander();
-      }
-
-      if (!this.userControlled) {
-
-        //moveForward_state();
-        if (this.stop_state) {
-          //rotateTo()
-          wander();
-        }
-
-        if (this.idle_state) {
-          wander();
-        }
-        
       }
     }
   }

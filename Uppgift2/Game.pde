@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.ArrayList;
 
+// Klass som representerar spelet
 class Game {
     Grid grid;
     Team playerTeam;
@@ -30,6 +31,7 @@ class Game {
         return copy;
     }
 
+    // Återställer spelarnas position och alla tentativa placeringar
     void reset() {
         this.playerPosition = this.grid.getNearestNode(playerTeam.tanks[0].position);
         this.opponentPosition = this.grid.getNearestNode(opponentTeam.tanks[2].position);
@@ -42,18 +44,10 @@ class Game {
             }
         }
     }
-    
-    void reset(List<Node> moveSet) {
-        for (Node node : moveSet) {
-            if (node.claimed == null) {
-                node.fill = null;
-            }
-        }
-    }
 
+    // Skickar ett resultat vid en handling av en spelare vid ett tillstånd
     GameState result(Node current, Action action, Team player) {
         List<Node> moveSet = new ArrayList<Node>();
-        // moveSet.add(current);
         if (current.fill == null)
             current.fill = player;
         
@@ -101,6 +95,7 @@ class Game {
         }
     }
 
+    // Beräknar poängen för en spelare
     int score(Team player) {
         int score = 0;
         for (Node[] rows : this.grid.nodes) {
@@ -113,8 +108,8 @@ class Game {
         return score;
     }
 
+    // Beräknar värdet för en viss spelare, det är skillnaden mellan spelarnas poäng
     int utility(Team player) {
-        // this.grid.print();
         int playerScore = 0;
         int opponentScore = 0;
 
@@ -130,6 +125,7 @@ class Game {
         return playerScore - opponentScore;
     }
 
+    // Ger en lista av möjliga handlingar från ett tillstånd
     List<Action> getActions(Node current) {
         List<Action> actions = new ArrayList<Action>();
         if (current.col - 1 >= 0)
@@ -145,11 +141,12 @@ class Game {
             if (grid.nodes[current.col][current.row + 1].isEmpty)
                 actions.add(Action.DOWN);
         
-        //Collections.shuffle(actions);
+        Collections.shuffle(actions);
         return actions;
     }
 }
 
+// Enum som representerar en handling
 enum Action {
   UP, LEFT, RIGHT, DOWN;
 }

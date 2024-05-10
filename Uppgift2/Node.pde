@@ -18,10 +18,10 @@ class Node {
   
   Sprite content;
   boolean isEmpty;
+  // Tentativ fyllning
   Team fill;
+  // Team som har "fångat" noden
   Team claimed;
-  color RED = color(204, 50, 50);
-  color BLUE = color(0, 150, 200);
   
   //***************************************************
   // Node Constructor 

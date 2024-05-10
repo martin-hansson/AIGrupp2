@@ -13,32 +13,24 @@ class Team2 extends Team {
 
     tanks[0] = new Tank(tank0_id, this, this.tank0_startpos, this.tank_size, ball0);
     tanks[1] = new Tank(tank1_id, this, this.tank1_startpos, this.tank_size, ball1);
-    tanks[2] = new MinimaxAgent(tank2_id, this, this.tank2_startpos, this.tank_size, ball2);
-
-    grid.getNode(14, 14).fill = this;
-    grid.getNode(14, 14).claimed = this;
+    tanks[2] = new GameAgent(tank2_id, this, this.tank2_startpos, this.tank_size, ball2);
 
     //this.homebase_x = width - 151;
     //this.homebase_y = height - 351;
   }
 
-  void updateLogic() {
-    //for (int i = 0; i < tanks.length; i++) {
-    //  tanks[i].updateLogic();
-    //}
-  }
-
   //==================================================
-  public class MinimaxAgent extends Tank {
+  public class GameAgent extends Tank {
 
     boolean started;
     Random random = new Random();
 
     //*******************************************************
-    MinimaxAgent(int id, Team team, PVector startpos, float diameter, CannonBall ball) {
+    GameAgent(int id, Team team, PVector startpos, float diameter, CannonBall ball) {
       super(id, team, startpos, diameter, ball);
 
       this.started = false; 
+      // Fyll startpositionen med teamets färg
       grid.getNearestNode(this.position).fill = this.team;
       grid.getNearestNode(this.position).claimed = this.team;
 
@@ -66,21 +58,26 @@ class Team2 extends Team {
     public void wander() {
       println("*** Team"+this.team_id+".Tank["+ this.getId() + "].wander()");
       //rotateTo(grid.getRandomNodePosition());  // Rotera mot ett slumpmässigt mål.
+      // Hämta nästa drag
       Node node = getNextMove(grid.getNearestNode(this.position));
-      this.team.game.opponentPosition = node;
-      moveTo(node.position); // Slumpmässigt mål.
+      this.team.game.playerPosition = node;
+      moveTo(node.position);
     }
 
+    // Hämtar ett drag med hjälp av strategin och returnerar nästa position som tanken ska flytta till
     public Node getNextMove(Node current) {
+      // Hämtar en handling från sökningen, kan bytas ut mot AlphaBetaSearch
       Action action = new MinimaxSearch(this.team.game, this.team).search(current);
+      // Hämtar tillståndet av att röra sig från nuvarande nod med handlingen
       GameState state = game.result(current, action, this.team);
+      // Återställ tentativ färgning
       game.reset();
-      Random random = new Random();
+      // Hämta en slumpmässig position i listan av positioner i riktningen
       int index = random.nextInt(state.moveSet.size());
       return state.moveSet.get(index);
-      // return state.moveSet.get(state.moveSet.size() - 1);
     }
 
+    // Överlagrad update för att uppdatera fyllningen under rörelse
     void update() {
       super.update();
       if (this.isMoving) {
@@ -181,6 +178,13 @@ class Team2 extends Team {
         
       }
     }
+  }
+
+
+  void updateLogic() {
+    //for (int i = 0; i < tanks.length; i++) {
+    //  tanks[i].updateLogic();
+    //}
   }
 
   //==================================================
