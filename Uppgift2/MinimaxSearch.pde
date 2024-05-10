@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 // Klass som genomför en Minimax-sökning
 class MinimaxSearch {
-    int LIMIT = 8; // Gränsen för hur djupt sökningen får gå
+    int LIMIT = 7; // Gränsen för hur djupt sökningen får gå
 
     Game game;
     Grid grid;
